@@ -9,6 +9,9 @@ var Engagement = require('dvp-mongomodels/model/Engagement').Engagement;
 var EngagementSession = require('dvp-mongomodels/model/Engagement').EngagementSession;
 var EngagementNote = require('dvp-mongomodels/model/Engagement').EngagementNote;
 var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
+var ExternalUser = require('dvp-mongomodels/model/ExternalUser');
+
+
 
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
@@ -169,6 +172,9 @@ function AddEngagementSession(req, res) {
         channel: req.body.channel,
         channel_from: req.body.channel_from,
         channel_to: req.body.channel_to,
+        company: company,
+        has_profile: true,
+        tenant: tenant,
         created_at: Date.now(),
         updated_at: Date.now()
 
@@ -214,7 +220,7 @@ function DeleteEngagementSession(req, res){
 
 
 
-    EngagementSession.findOneAndRemove({_id: req.params.session}, function(err, engagement) {
+    EngagementSession.findOneAndRemove({_id: req.params.session,company: company, tenant: tenant}, function(err, engagement) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Delete Engagement failed", false, undefined);
             res.end(jsonString);
@@ -254,7 +260,7 @@ function AppendNoteToEngagementSession(req, res){
     var jsonString;
 
     req.body.updated_at = Date.now();
-    EngagementSession.findOneAndUpdate({_id: req.params.session}, { $addToSet :{
+    EngagementSession.findOneAndUpdate({_id: req.params.session,company: company, tenant: tenant}, { $addToSet :{
         notes : {
             body: req.body.body,
             author: req.user.iss,
@@ -276,6 +282,135 @@ function AppendNoteToEngagementSession(req, res){
 
 
 };
+function AddEngagementSessionForProfile(req, res) {
+
+    logger.debug("DVP-Interactions.AddEngagementSessionForProfile Internal method ");
+
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var category = req.body.channel;
+    var contact = req.body.channel_from;
+    var jsonString;
+
+
+    var otherQuery = {company: company, tenant: tenant, "contacts.type": category, "contacts.contact": contact};
+    var orArray = [otherQuery];
+
+    if(category == 'call'){
+
+        var queryObject = {company: company, tenant: tenant};
+        queryObject["phone"] = contact;
+
+        orArray.push(queryObject);
+
+        queryObject = {company: company, tenant: tenant};
+        queryObject["landnumber"] = contact;
+
+        orArray.push(queryObject);
+    }
+
+    if(category == 'facebook-post' || category == 'facebook-chat'){
+
+        var queryObject = {company: company, tenant: tenant};
+        queryObject["facebook"] = contact;
+
+        orArray.push(queryObject);
+    }
+
+
+    var orQuery = {$or: orArray};
+
+
+    ExternalUser.find(orQuery, function (err, users) {
+
+        ////////////////////////////////////External users found/////////////////////////////////////////////
+        if (!err && users && users.length == 1) {
+
+            ////////////////////////exact one user///////////////////////////////////////////////
+
+            var engagementSession = EngagementSession({
+
+                engagement_id: req.body.engagement_id,
+                channel: req.body.channel,
+                channel_from: req.body.channel_from,
+                channel_to: req.body.channel_to,
+                company: company,
+                tenant: tenant,
+                has_profile: true,
+                created_at: Date.now(),
+                updated_at: Date.now()
+
+            });
+
+
+                   engagementSession.save(function (err, engage) {
+                        if (err) {
+                            jsonString = messageFormatter.FormatMessage(err, "Engagement Session save failed", false, undefined);
+                            res.end(jsonString);
+                        } else {
+
+                                Engagement.findOneAndUpdate({
+                                    company: company,
+                                    tenant: tenant,
+                                    profile: users[0].id
+                                }, {
+                                    $addToSet: {
+                                        engagements: engagementSession._id
+                                    },
+                                    profile: users[0].id,
+                                    updated_at: Date.now()
+
+                                },{upsert:true}, function (err, session) {
+                                    if (err) {
+
+                                        jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+
+                                    } else {
+
+                                        jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, session);
+
+                                    }
+
+                                    res.end(jsonString);
+
+                                });
+
+                        }
+                    });
+
+
+
+
+        } else {
+
+            var engagementSession = EngagementSession({
+
+                engagement_id: req.body.engagement_id,
+                channel: req.body.channel,
+                channel_from: req.body.channel_from,
+                channel_to: req.body.channel_to,
+                company: company,
+                has_profile: false,
+                tenant: tenant,
+                created_at: Date.now(),
+                updated_at: Date.now()
+
+            });
+
+            engagementSession.save(function (err, engage) {
+                if (err) {
+                    jsonString = messageFormatter.FormatMessage(err, "Engagement Session save failed", false, undefined);
+
+                } else {
+
+                    jsonString = messageFormatter.FormatMessage(undefined, "Engagement Session saved successfully", false, engage);
+                }
+
+                res.end(jsonString);
+            });
+        }
+    });
+}
 
 
 module.exports.GetEngagements = GetEngagements;
@@ -286,4 +421,5 @@ module.exports.DeleteEngagement = DeleteEngagement;
 module.exports.AddEngagementSession = AddEngagementSession;
 module.exports.DeleteEngagementSession = DeleteEngagementSession;
 module.exports.AppendNoteToEngagementSession = AppendNoteToEngagementSession;
+module.exports.AddEngagementSessionForProfile = AddEngagementSessionForProfile;
 
