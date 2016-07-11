@@ -79,6 +79,67 @@ function GetEngagement(req,res){
 
 
 };
+function GetEngagementsWithData(req,res){
+
+    logger.debug("DVP-Interactions.GetEngagement Internal method ");
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+    Engagement.find({company: company, tenant: tenant}).populate('engagements').exec(function(err, engagements) {
+        if (err) {
+
+            jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);
+
+        }else {
+
+            if (engagements) {
+
+
+                jsonString = messageFormatter.FormatMessage(err, "Get Engagements Successful", true, engagements);
+
+            }else{
+
+                jsonString = messageFormatter.FormatMessage(undefined, "No Engagements Found", false, undefined);
+
+            }
+        }
+
+        res.end(jsonString);
+    });
+
+
+};
+function GetEngagementWithData(req,res){
+
+
+    logger.debug("DVP-Interactions.GetEngagement Internal method ");
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+    Engagement.findOne({company: company, tenant: tenant, _id: req.params.id}).populate('engagements').exec(function(err, engagement) {
+        if (err) {
+
+            jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);
+
+        }else {
+
+            if (engagement) {
+
+
+                jsonString = messageFormatter.FormatMessage(err, "Get Engagements Successful", true, engagement);
+
+            }else{
+
+                jsonString = messageFormatter.FormatMessage(undefined, "No Engagements Found", false, undefined);
+
+            }
+        }
+
+        res.end(jsonString);
+    });
+
+
+};
 function GetEngagementByProfile(req,res){
 
 
@@ -220,7 +281,7 @@ function DeleteEngagementSession(req, res){
 
 
 
-    EngagementSession.findOneAndRemove({_id: req.params.session,company: company, tenant: tenant}, function(err, engagement) {
+    EngagementSession.findOneAndRemove({engagement_id: req.params.session,company: company, tenant: tenant}, function(err, engagement) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Delete Engagement failed", false, undefined);
             res.end(jsonString);
@@ -260,7 +321,7 @@ function AppendNoteToEngagementSession(req, res){
     var jsonString;
 
     req.body.updated_at = Date.now();
-    EngagementSession.findOneAndUpdate({_id: req.params.session,company: company, tenant: tenant}, { $addToSet :{
+    EngagementSession.findOneAndUpdate({engagement_id: req.params.session,company: company, tenant: tenant}, { $addToSet :{
         notes : {
             body: req.body.body,
             author: req.user.iss,
@@ -378,9 +439,6 @@ function AddEngagementSessionForProfile(req, res) {
                         }
                     });
 
-
-
-
         } else {
 
             var engagementSession = EngagementSession({
@@ -411,10 +469,171 @@ function AddEngagementSessionForProfile(req, res) {
         }
     });
 }
+function MoveEngagementBetweenProfiles(req, res){
+
+
+    logger.debug("DVP-LiteTicket.MoveEngagementBetweenProfiles Internal method ");
+
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+
+    req.body.updated_at = Date.now();
+    EngagementSession.findOne({engagement_id: req.params.session,company: company, tenant: tenant}, function (err, session) {
+        if (err || (req.params.from == req.params.to)) {
+
+            jsonString = messageFormatter.FormatMessage(err, "Find engagement Failed", false, undefined);
+            res.end(jsonString);
+
+        } else {
+
+            ////////engagement session found///////////////////////////////////////////////////////////////////////////////
+            if(session){
+
+
+                Engagement.findOneAndUpdate({company: company, tenant: tenant, profile: req.params.to}, {
+                    $addToSet: {
+                        engagements: session._id
+                    }
+                }, function (err, engagement) {
+                    if (err) {
+
+                        jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+                        res.end(jsonString);
+
+                    } else {
+
+                        if (req.params.operation == 'cut' && engagement) {
+                            Engagement.findOneAndUpdate({
+                                profile: req.params.from,
+                                company: company,
+                                tenant: tenant
+                            }, {$pull: {'engagements': session._id}}, function (err, engagement) {
+                                if (err) {
+
+                                    jsonString = messageFormatter.FormatMessage(err, "Remove Engagement Failed", false, undefined);
+
+
+                                } else {
+
+                                    jsonString = messageFormatter.FormatMessage(undefined, "Remove Engagement successfully", false, engagement);
+
+                                }
+
+                                res.end(jsonString);
+
+
+                            });
+
+                        }else{
+
+                            if(engagement) {
+                                jsonString = messageFormatter.FormatMessage(undefined, "Operation stopped because copy item failed", false, undefined);
+                            }else{
+
+                                jsonString = messageFormatter.FormatMessage(undefined, "Operation completed successfully", true, undefined);
+
+
+                            }
+                            res.end(jsonString);
+
+                        }
+                    }
+
+                });
+
+            }else{
+
+                jsonString = messageFormatter.FormatMessage(err, "Engagement Session Not Found", false, undefined);
+                res.end(jsonString);
+
+            }
+        }
+
+    });
+};
+function GetIsolatedEngagenetSessions(req, res) {
+
+    logger.debug("DVP-LiteTicket.GetEngagementSessionsWhichHasNoProfile Internal method ");
+
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+
+
+    EngagementSession.find({
+        has_profile: false,
+        company: company,
+        tenant: tenant
+    }, function (err, session) {
+        if (err) {
+
+            jsonString = messageFormatter.FormatMessage(err, "Find Engagement Session Failed", false, undefined);
+
+
+        } else {
+
+            jsonString = messageFormatter.FormatMessage(err, "Find Engagement Session Successful ", false, session);
+
+        }
+
+        res.end(jsonString);
+    })
+}
+function AddIsolatedEngagementSession(req, res) {
+
+    logger.debug("DVP-Interactions.GetEngagement Internal method ");
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+
+
+
+
+    EngagementSession.findOneAndUpdate({engagement_id: req.params.session, company: company, tenant: tenant, has_profile: false}, {
+        has_profile: true
+    },function (err, engagementSession) {
+        if (err) {
+            jsonString = messageFormatter.FormatMessage(err, "Engagement Session save failed", false, undefined);
+            res.end(jsonString);
+        } else {
+
+
+            if(engagementSession) {
+
+                Engagement.findOneAndUpdate({company: company, tenant: tenant, profile: req.params.profile}, {
+                    $addToSet: {
+                        engagements: engagementSession._id
+                    }
+                }, function (err, session) {
+                    if (err) {
+
+                        jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+
+                    } else {
+
+                        jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, session);
+
+                    }
+
+                    res.end(jsonString);
+                });
+            }else{
+
+                jsonString = messageFormatter.FormatMessage(undefined, "Engagement Session save failed", false, undefined);
+                res.end(jsonString);
+            }
+
+        }
+    });
+};
+
 
 
 module.exports.GetEngagements = GetEngagements;
 module.exports.GetEngagement = GetEngagement;
+module.exports.GetEngagementsWithData = GetEngagementsWithData;
+module.exports.GetEngagementWithData = GetEngagementWithData;
 module.exports.GetEngagementByProfile = GetEngagementByProfile;
 module.exports.CreateEngagement = CreateEngagement;
 module.exports.DeleteEngagement = DeleteEngagement;
@@ -422,4 +641,7 @@ module.exports.AddEngagementSession = AddEngagementSession;
 module.exports.DeleteEngagementSession = DeleteEngagementSession;
 module.exports.AppendNoteToEngagementSession = AppendNoteToEngagementSession;
 module.exports.AddEngagementSessionForProfile = AddEngagementSessionForProfile;
+module.exports.MoveEngagementBetweenProfiles = MoveEngagementBetweenProfiles;
+module.exports.GetIsolatedEngagenetSessions = GetIsolatedEngagenetSessions;
+module.exports.AddIsolatedEngagementSession = AddIsolatedEngagementSession;
 

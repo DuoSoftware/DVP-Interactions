@@ -57,14 +57,20 @@ mongoose.connect(connectionstring);
 
 server.get('/DVP/API/:version/Engagements', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagements);
 server.get('/DVP/API/:version/Engagement/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagement);
+server.get('/DVP/API/:version/EngagementsWithData', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementsWithData);
+server.get('/DVP/API/:version/EngagementWithData/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementWithData);
+server.get('/DVP/API/:version/IsolatedEngagementSession', authorization({resource:"engagement", action:"read"}), engagementService.GetIsolatedEngagenetSessions);
 server.get('/DVP/API/:version/EngagementByProfile/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementByProfile);
 server.del('/DVP/API/:version/Engagement/:id', authorization({resource:"engagement", action:"delete"}), engagementService.DeleteEngagement);
 server.post('/DVP/API/:version/Engagement', authorization({resource:"engagement", action:"write"}), engagementService.CreateEngagement);
 server.post('/DVP/API/:version/Engagement/:id/EngagementSession', authorization({resource:"engagement", action:"write"}), engagementService.AddEngagementSession);
+server.put('/DVP/API/:version/Engagement/:profile/IsolatedEngagementSession/:session', authorization({resource:"engagement", action:"write"}), engagementService.AddIsolatedEngagementSession);
 server.del('/DVP/API/:version/Engagement/:id/EngagementSession/:session', authorization({resource:"engagement", action:"delete"}), engagementService.DeleteEngagementSession);
 server.post('/DVP/API/:version/EngagementSession/:session/Note', authorization({resource:"engagement", action:"write"}), engagementService.AppendNoteToEngagementSession);
-
+server.put('/DVP/API/:version/EngagementSession/:session/Move/:operation/From/:from/To/:to', authorization({resource:"engagement", action:"write"}), engagementService.MoveEngagementBetweenProfiles);
 server.post('/DVP/API/:version/EngagementSessionForProfile', authorization({resource:"engagement", action:"write"}), engagementService.AddEngagementSessionForProfile);
+
+
 
 
 
