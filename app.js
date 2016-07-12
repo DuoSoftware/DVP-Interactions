@@ -59,7 +59,7 @@ server.get('/DVP/API/:version/Engagements', authorization({resource:"engagement"
 server.get('/DVP/API/:version/Engagement/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagement);
 server.get('/DVP/API/:version/EngagementsWithData', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementsWithData);
 server.get('/DVP/API/:version/EngagementWithData/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementWithData);
-server.get('/DVP/API/:version/IsolatedEngagementSession', authorization({resource:"engagement", action:"read"}), engagementService.GetIsolatedEngagenetSessions);
+server.get('/DVP/API/:version/IsolatedEngagementSessions', authorization({resource:"engagement", action:"read"}), engagementService.GetIsolatedEngagenetSessions);
 server.get('/DVP/API/:version/EngagementByProfile/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementByProfile);
 server.del('/DVP/API/:version/Engagement/:id', authorization({resource:"engagement", action:"delete"}), engagementService.DeleteEngagement);
 server.post('/DVP/API/:version/Engagement', authorization({resource:"engagement", action:"write"}), engagementService.CreateEngagement);

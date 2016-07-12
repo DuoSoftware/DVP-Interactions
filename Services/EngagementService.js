@@ -179,27 +179,55 @@ function CreateEngagement(req,res) {
     var company = parseInt(req.user.company);
 
 
-    var engagement = Engagement({
-
-        profile: req.body.profile,
-        company: company,
-        tenant: tenant,
-        created_at: Date.now(),
-        updated_at: Date.now()
-
-    });
-
-    engagement.save(function (err, engage) {
+    ExternalUser.findOne({company: company, tenant: tenant, _id: req.body.profile}, function(err, users) {
         if (err) {
-            jsonString = messageFormatter.FormatMessage(err, "Engagement save failed", false, undefined);
+
+            jsonString = messageFormatter.FormatMessage(err, "Get External Users Failed", false, undefined);
             res.end(jsonString);
-        } else {
+
+        }else {
+
+            if (users) {
 
 
-            jsonString = messageFormatter.FormatMessage(undefined, "Engagement saved successfully", true, engage);
-            res.end(jsonString);
+
+
+                var engagement = Engagement({
+
+                    profile: req.body.profile,
+                    company: company,
+                    tenant: tenant,
+                    created_at: Date.now(),
+                    updated_at: Date.now()
+
+                });
+
+                engagement.save(function (err, engage) {
+                    if (err) {
+                        jsonString = messageFormatter.FormatMessage(err, "Engagement save failed", false, undefined);
+                        res.end(jsonString);
+                    } else {
+
+
+                        jsonString = messageFormatter.FormatMessage(undefined, "Engagement saved successfully", true, engage);
+                        res.end(jsonString);
+                    }
+                });
+
+
+            }else{
+
+                jsonString = messageFormatter.FormatMessage(undefined, "No External Users Found", false, undefined);
+                res.end(jsonString);
+
+            }
         }
+
+
     });
+
+
+
 };
 function DeleteEngagement(req,res){
 
@@ -229,10 +257,12 @@ function AddEngagementSession(req, res) {
 
     var engagementSession = EngagementSession({
 
+        _id: req.body.engagement_id,
         engagement_id: req.body.engagement_id,
         channel: req.body.channel,
         channel_from: req.body.channel_from,
         channel_to: req.body.channel_to,
+        direction: req.body.direction,
         company: company,
         has_profile: true,
         tenant: tenant,
@@ -357,7 +387,7 @@ function AddEngagementSessionForProfile(req, res) {
     var otherQuery = {company: company, tenant: tenant, "contacts.type": category, "contacts.contact": contact};
     var orArray = [otherQuery];
 
-    if(category == 'call'){
+    if(category == 'call' || category == 'sms' ){
 
         var queryObject = {company: company, tenant: tenant};
         queryObject["phone"] = contact;
@@ -369,6 +399,8 @@ function AddEngagementSessionForProfile(req, res) {
 
         orArray.push(queryObject);
     }
+
+
 
     if(category == 'facebook-post' || category == 'facebook-chat'){
 
@@ -391,10 +423,12 @@ function AddEngagementSessionForProfile(req, res) {
 
             var engagementSession = EngagementSession({
 
+                _id: req.body.engagement_id,
                 engagement_id: req.body.engagement_id,
                 channel: req.body.channel,
                 channel_from: req.body.channel_from,
                 channel_to: req.body.channel_to,
+                direction: req.body.direction,
                 company: company,
                 tenant: tenant,
                 has_profile: true,
@@ -443,11 +477,13 @@ function AddEngagementSessionForProfile(req, res) {
 
             var engagementSession = EngagementSession({
 
+                _id: req.body.engagement_id,
                 engagement_id: req.body.engagement_id,
                 channel: req.body.channel,
                 channel_from: req.body.channel_from,
                 channel_to: req.body.channel_to,
                 company: company,
+                direction: req.body.direction,
                 has_profile: false,
                 tenant: tenant,
                 created_at: Date.now(),
@@ -461,7 +497,7 @@ function AddEngagementSessionForProfile(req, res) {
 
                 } else {
 
-                    jsonString = messageFormatter.FormatMessage(undefined, "Engagement Session saved successfully", false, engage);
+                    jsonString = messageFormatter.FormatMessage(undefined, "Engagement Session saved successfully", true, engage);
                 }
 
                 res.end(jsonString);
@@ -552,7 +588,7 @@ function MoveEngagementBetweenProfiles(req, res){
 
     });
 };
-function GetIsolatedEngagenetSessions(req, res) {
+function GetIsolatedEngagementSessions(req, res) {
 
     logger.debug("DVP-LiteTicket.GetEngagementSessionsWhichHasNoProfile Internal method ");
 
@@ -642,6 +678,6 @@ module.exports.DeleteEngagementSession = DeleteEngagementSession;
 module.exports.AppendNoteToEngagementSession = AppendNoteToEngagementSession;
 module.exports.AddEngagementSessionForProfile = AddEngagementSessionForProfile;
 module.exports.MoveEngagementBetweenProfiles = MoveEngagementBetweenProfiles;
-module.exports.GetIsolatedEngagenetSessions = GetIsolatedEngagenetSessions;
+module.exports.GetIsolatedEngagenetSessions = GetIsolatedEngagementSessions;
 module.exports.AddIsolatedEngagementSession = AddIsolatedEngagementSession;
 
