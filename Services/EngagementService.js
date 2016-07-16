@@ -197,6 +197,7 @@ function CreateEngagement(req,res) {
                     profile: req.body.profile,
                     company: company,
                     tenant: tenant,
+                    body: req.body.body,
                     created_at: Date.now(),
                     updated_at: Date.now()
 
@@ -429,6 +430,7 @@ function AddEngagementSessionForProfile(req, res) {
                 channel_from: req.body.channel_from,
                 channel_to: req.body.channel_to,
                 direction: req.body.direction,
+                body: req.body.body,
                 company: company,
                 tenant: tenant,
                 has_profile: true,
@@ -453,7 +455,9 @@ function AddEngagementSessionForProfile(req, res) {
                                         engagements: engagementSession._id
                                     },
                                     profile: users[0].id,
-                                    updated_at: Date.now()
+                                    updated_at: Date.now(),
+                                    company: company,
+                                    tenant: tenant
 
                                 },{upsert:true}, function (err, session) {
                                     if (err) {
@@ -461,6 +465,8 @@ function AddEngagementSessionForProfile(req, res) {
                                         jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
 
                                     } else {
+
+                                        session.profile_id = users[0].id;
 
                                         jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, session);
 
@@ -484,6 +490,7 @@ function AddEngagementSessionForProfile(req, res) {
                 channel_to: req.body.channel_to,
                 company: company,
                 direction: req.body.direction,
+                body: req.body.body,
                 has_profile: false,
                 tenant: tenant,
                 created_at: Date.now(),
