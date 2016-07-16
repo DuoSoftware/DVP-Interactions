@@ -5,6 +5,7 @@ var jwt = require('restify-jwt');
 var mongoose = require('mongoose');
 var secret = require('dvp-common/Authentication/Secret.js');
 var authorization = require('dvp-common/Authentication/Authorization.js');
+var inboxService = require('./Services/UserInboxService.js');
 var engagementService = require('./Services/EngagementService');
 var util = require('util');
 var port = config.Host.port || 3000;
@@ -16,6 +17,7 @@ var server = restify.createServer({
 });
 
 server.pre(restify.pre.userAgentConnection());
+server.use(restify.queryParser());
 server.use(restify.bodyParser({ mapParams: false }));
 
 restify.CORS.ALLOW_HEADERS.push('authorization');
@@ -75,6 +77,13 @@ server.post('/DVP/API/:version/EngagementSessionForProfile', authorization({reso
 
 
 //////////////////////User Inbox///////////////////////////////////////////////////////////////////////////////////////////////////
+
+server.post('/DVP/API/:version/Inbox/Message', authorization({resource:"inbox", action:"write"}), inboxService.AddMessageToInbox);
+server.put('/DVP/API/:version/Inbox/Message/Read', authorization({resource:"inbox", action:"write"}), inboxService.SetMessageAsRead);
+server.del('/DVP/API/:version/Inbox/:profileId/Message/:messageId', authorization({resource:"inbox", action:"delete"}), inboxService.DeleteMessage);
+server.get('/DVP/API/:version/Inbox/:profileId/Messages/Unread', authorization({resource:"inbox", action:"read"}), inboxService.GetUnreadMessages);
+server.get('/DVP/API/:version/Inbox/:profileId/Messages/Read', authorization({resource:"inbox", action:"read"}), inboxService.GetReadMessages);
+server.get('/DVP/API/:version/Inbox/:profileId/Messages/Deleted', authorization({resource:"inbox", action:"read"}), inboxService.GetDeletedMessages);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
