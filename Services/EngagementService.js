@@ -399,14 +399,16 @@ function AddEngagementSessionForProfile(req, res) {
         queryObject["landnumber"] = contact;
 
         orArray.push(queryObject);
-    }
-
-
-
-    if(category == 'facebook-post' || category == 'facebook-chat'){
+    } else if(category == 'facebook-post' || category == 'facebook-chat'){
 
         var queryObject = {company: company, tenant: tenant};
         queryObject["facebook"] = contact;
+
+        orArray.push(queryObject);
+    }else{
+
+        var queryObject = {company: company, tenant: tenant};
+        queryObject[category] = contact;
 
         orArray.push(queryObject);
     }
@@ -454,19 +456,26 @@ function AddEngagementSessionForProfile(req, res) {
                                     $addToSet: {
                                         engagements: engagementSession._id
                                     },
-                                    profile: users[0].id,
-                                    updated_at: Date.now(),
-                                    company: company,
-                                    tenant: tenant
+                                    $setOnInsert: {
+                                        //updated_at: Date.now(),
+                                        created_at: Date.now(),
+                                        company: company,
+                                        tenant: tenant
+                                    },
+                                    $set:{
 
-                                },{upsert:true}, function (err, session) {
+                                        profile: users[0].id,
+                                        updated_at: Date.now(),
+                                    }
+
+                                },{upsert:true, new: true}, function (err, session) {
                                     if (err) {
 
                                         jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
 
                                     } else {
 
-                                        session.profile_id = users[0].id;
+                                        session.profile = users[0].id;
 
                                         jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, session);
 
@@ -630,9 +639,6 @@ function AddIsolatedEngagementSession(req, res) {
     var tenant = parseInt(req.user.tenant);
     var jsonString;
 
-
-
-
     EngagementSession.findOneAndUpdate({engagement_id: req.params.session, company: company, tenant: tenant, has_profile: false}, {
         has_profile: true
     },function (err, engagementSession) {
@@ -642,13 +648,25 @@ function AddIsolatedEngagementSession(req, res) {
         } else {
 
 
-            if(engagementSession) {
+            if (engagementSession) {
 
                 Engagement.findOneAndUpdate({company: company, tenant: tenant, profile: req.params.profile}, {
                     $addToSet: {
                         engagements: engagementSession._id
+                    },
+                    $set: {
+
+                        profile: req.params.profile,
+                        updated_at: Date.now()
+                    },
+                    $setOnInsert: {
+                        updated_at: Date.now(),
+                        created_at: Date.now(),
+                        company: company,
+                        tenant: tenant
                     }
-                }, function (err, session) {
+
+                }, {upsert: true}, function (err, session) {
                     if (err) {
 
                         jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
@@ -661,7 +679,7 @@ function AddIsolatedEngagementSession(req, res) {
 
                     res.end(jsonString);
                 });
-            }else{
+            } else {
 
                 jsonString = messageFormatter.FormatMessage(undefined, "Engagement Session save failed", false, undefined);
                 res.end(jsonString);
