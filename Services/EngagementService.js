@@ -374,6 +374,66 @@ function AppendNoteToEngagementSession(req, res){
 
 
 };
+function RemoveNoteFromEngagementSession(req, res){
+
+
+    logger.debug("DVP-LiteTicket.RemoveNoteFromEngagementSession Internal method ");
+
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+
+    req.body.updated_at = Date.now();
+    EngagementSession.findOneAndUpdate({engagement_id: req.params.session,company: company, tenant: tenant}, { pull :{
+        notes : {
+            _id: req.body.noteid
+        }}}, function (err, notes) {
+        if (err) {
+
+            jsonString = messageFormatter.FormatMessage(err, "Remove Note From EngagementSession Failed", false, undefined);
+
+        } else {
+
+            jsonString = messageFormatter.FormatMessage(undefined, "Remove Note From EngagementSession Successful", true, notes);
+
+        }
+
+        res.end(jsonString);
+    });
+
+
+
+};
+function UpdateNoteInEngagementSession(req, res){
+
+
+    logger.debug("DVP-LiteTicket.UpdateNoteInEngagementSession Internal method ");
+
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+
+    req.body.updated_at = Date.now();
+    EngagementSession.findOneAndUpdate({engagement_id: req.params.session,company: company, tenant: tenant, 'notes.id':req.body.noteid}, { $set :{
+        notes : {
+            'notes.$.body': req.body.body
+        }}}, function (err, notes) {
+        if (err) {
+
+            jsonString = messageFormatter.FormatMessage(err, "Update Note In EngagementSession Failed", false, undefined);
+
+        } else {
+
+            jsonString = messageFormatter.FormatMessage(undefined, "Update Note In EngagementSession Successful", true, notes);
+
+        }
+
+        res.end(jsonString);
+    });
+
+
+
+};
 function AddEngagementSessionForProfile(req, res) {
 
     logger.debug("DVP-Interactions.AddEngagementSessionForProfile Internal method ");
@@ -381,7 +441,12 @@ function AddEngagementSessionForProfile(req, res) {
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var category = req.body.channel;
+
     var contact = req.body.channel_from;
+    if(req.body.direction == 'outbound')
+        contact= req.body.channel_to;
+
+
     var jsonString;
 
 
@@ -477,7 +542,7 @@ function AddEngagementSessionForProfile(req, res) {
 
                                         session.profile = users[0].id;
 
-                                        jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, session);
+                                        jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engagementSession);
 
                                     }
 
@@ -701,6 +766,8 @@ module.exports.DeleteEngagement = DeleteEngagement;
 module.exports.AddEngagementSession = AddEngagementSession;
 module.exports.DeleteEngagementSession = DeleteEngagementSession;
 module.exports.AppendNoteToEngagementSession = AppendNoteToEngagementSession;
+module.exports.RemoveNoteFromEngagementSession = RemoveNoteFromEngagementSession;
+module.exports.UpdateNoteInEngagementSession = UpdateNoteInEngagementSession;
 module.exports.AddEngagementSessionForProfile = AddEngagementSessionForProfile;
 module.exports.MoveEngagementBetweenProfiles = MoveEngagementBetweenProfiles;
 module.exports.GetIsolatedEngagenetSessions = GetIsolatedEngagementSessions;
