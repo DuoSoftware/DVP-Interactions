@@ -85,7 +85,7 @@ function GetEngagementsWithData(req,res){
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-    Engagement.find({company: company, tenant: tenant}).populate('engagements').exec(function(err, engagements) {
+    Engagement.find({company: company, tenant: tenant}).populate('EngagementSession').exec(function(err, engagements) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);
@@ -116,7 +116,7 @@ function GetEngagementWithData(req,res){
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-    Engagement.findOne({company: company, tenant: tenant, _id: req.params.id}).populate('engagements').exec(function(err, engagement) {
+    Engagement.findOne({company: company, tenant: tenant, id:ObjectId(req.params.id)}).populate('engagements').exec(function(err, engagement) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);
