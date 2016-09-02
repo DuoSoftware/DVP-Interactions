@@ -26,6 +26,7 @@ server.use(restify.queryParser());
 server.use(restify.bodyParser({ mapParams: false }));
 
 restify.CORS.ALLOW_HEADERS.push('authorization');
+restify.CORS.ALLOW_HEADERS.push('companyinfo');
 server.use(restify.CORS());
 server.use(restify.fullResponse());
 
