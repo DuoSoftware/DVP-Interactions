@@ -150,7 +150,7 @@ function GetEngagementWithData(req,res){
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-    Engagement.findOne({company: company, tenant: tenant, _id:ObjectId(req.params.id)}).populate('engagements').exec(function(err, engagement) {
+    Engagement.findOne({company: company, tenant: tenant, _id:req.params.id}).populate('engagements').exec(function(err, engagement) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);

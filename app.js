@@ -7,9 +7,14 @@ var secret = require('dvp-common/Authentication/Secret.js');
 var authorization = require('dvp-common/Authentication/Authorization.js');
 var inboxService = require('./Services/UserInboxService.js');
 var engagementService = require('./Services/EngagementService');
+
+
+
 var util = require('util');
 var port = config.Host.port || 3000;
 var host = config.Host.vdomain || 'localhost';
+
+
 
 
 var server = restify.createServer({
@@ -54,7 +59,6 @@ mongoose.connection.once('open', function() {
 
 
 mongoose.connect(connectionstring);
-
 
 ///////////////////////////////Engagement////////////////////////////////////////////////////////////////////////////////////////////
 
