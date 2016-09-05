@@ -189,9 +189,6 @@ function CreateEngagement(req,res) {
 
             if (users) {
 
-
-
-
                 var engagement = Engagement({
 
                     profile: req.body.profile,
@@ -209,7 +206,6 @@ function CreateEngagement(req,res) {
                         res.end(jsonString);
                     } else {
 
-
                         jsonString = messageFormatter.FormatMessage(undefined, "Engagement saved successfully", true, engage);
                         res.end(jsonString);
                     }
@@ -223,12 +219,7 @@ function CreateEngagement(req,res) {
 
             }
         }
-
-
     });
-
-
-
 };
 function DeleteEngagement(req,res){
 
@@ -324,11 +315,9 @@ function DeleteEngagementSession(req, res){
 
                     jsonString = messageFormatter.FormatMessage(err, "Remove Engagement Failed", false, undefined);
 
-
                 }else{
 
                     jsonString = messageFormatter.FormatMessage(undefined, "Remove Engagement successfully", false, engagement);
-
                 }
 
                 res.end(jsonString);
