@@ -60,6 +60,7 @@ mongoose.connect(connectionstring);
 
 server.get('/DVP/API/:version/Engagements', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagements);
 server.get('/DVP/API/:version/Engagement/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagement);
+server.get('/DVP/API/:version/Engagements/:ids', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagements);
 server.get('/DVP/API/:version/EngagementsWithData', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementsWithData);
 server.get('/DVP/API/:version/EngagementWithData/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementWithData);
 server.get('/DVP/API/:version/IsolatedEngagementSessions', authorization({resource:"engagement", action:"read"}), engagementService.GetIsolatedEngagenetSessions);
