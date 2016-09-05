@@ -48,6 +48,7 @@ function GetEngagements(req,res){
 
 
 };
+
 function GetEngagement(req,res){
 
 
@@ -78,7 +79,40 @@ function GetEngagement(req,res){
     });
 
 
-};
+}
+
+function GetEngagements(req,res){
+
+
+    logger.debug("DVP-Interactions.GetEngagements Internal method ");
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+    Engagement.findOne({company: company, tenant: tenant, _id: { $in: req.params.ids }}, function(err, engagement) {
+        if (err) {
+
+            jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);
+
+        }else {
+
+            if (engagement) {
+
+
+                jsonString = messageFormatter.FormatMessage(err, "Get Engagements Successful", true, engagement);
+
+            }else{
+
+                jsonString = messageFormatter.FormatMessage(undefined, "No Engagements Found", false, undefined);
+
+            }
+        }
+
+        res.end(jsonString);
+    });
+
+
+}
+
 function GetEngagementsWithData(req,res){
 
     logger.debug("DVP-Interactions.GetEngagement Internal method ");
