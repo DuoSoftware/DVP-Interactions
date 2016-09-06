@@ -86,7 +86,7 @@ function GetEngagements(req,res){
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-    Engagement.findOne({company: company, tenant: tenant, _id: { $in: req.params.ids }}, function(err, engagement) {
+    Engagement.find({company: company, tenant: tenant, _id: { $in: req.params.ids }}, function(err, engagement) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);
@@ -323,6 +323,7 @@ function AddEngagementSession(req, res) {
         }
     });
 };
+
 function DeleteEngagementSession(req, res){
 
 
@@ -362,6 +363,40 @@ function DeleteEngagementSession(req, res){
 
 
 };
+
+function GetEngagementSessions(req, res){
+
+
+    logger.debug("DVP-Interactions.GetEngagementSessions Internal method ");
+
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+
+    EngagementSession.find({engagement_id: { $in: req.params.sessions },company: company, tenant: tenant}, function(err, engagement) {
+        if (err) {
+
+            jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Failed", false, undefined);
+
+        }else {
+
+            if (engagement) {
+
+
+                jsonString = messageFormatter.FormatMessage(err, "Get EngagementSession Successful", true, engagement);
+
+            }else{
+
+                jsonString = messageFormatter.FormatMessage(undefined, "No EngagementSession Found", false, undefined);
+
+            }
+        }
+
+        res.end(jsonString);
+    });
+
+};
+
 function AppendNoteToEngagementSession(req, res){
 
 
@@ -785,6 +820,7 @@ module.exports.CreateEngagement = CreateEngagement;
 module.exports.DeleteEngagement = DeleteEngagement;
 module.exports.AddEngagementSession = AddEngagementSession;
 module.exports.DeleteEngagementSession = DeleteEngagementSession;
+module.exports.GetEngagementSessions = GetEngagementSessions;
 module.exports.AppendNoteToEngagementSession = AppendNoteToEngagementSession;
 module.exports.RemoveNoteFromEngagementSession = RemoveNoteFromEngagementSession;
 module.exports.UpdateNoteInEngagementSession = UpdateNoteInEngagementSession;
