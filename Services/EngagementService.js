@@ -48,7 +48,6 @@ function GetEngagements(req,res){
 
 
 };
-
 function GetEngagement(req,res){
 
 
@@ -80,7 +79,6 @@ function GetEngagement(req,res){
 
 
 }
-
 function GetEngagements(req,res){
 
 
@@ -112,7 +110,6 @@ function GetEngagements(req,res){
 
 
 }
-
 function GetEngagementsWithData(req,res){
 
     logger.debug("DVP-Interactions.GetEngagement Internal method ");
