@@ -371,7 +371,17 @@ function GetEngagementSessions(req, res){
     var tenant = parseInt(req.user.tenant);
     var jsonString;
 
-    EngagementSession.find({engagement_id: { $in: req.params.sessions },company: company, tenant: tenant}, function(err, engagement) {
+
+    var paramArr;
+    if(Array.isArray(req.query.session)) {
+        paramArr = req.query.session;
+    }else{
+
+        paramArr = [req.query.session];
+    }
+
+
+    EngagementSession.find({engagement_id: { $in: paramArr },company: company, tenant: tenant}, function(err, engagement) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Failed", false, undefined);
@@ -392,6 +402,32 @@ function GetEngagementSessions(req, res){
 
         res.end(jsonString);
     });
+
+};
+function getEngagementSessionNote(req, res){
+
+
+    logger.debug("DVP-LiteTicket.getEngagementSessionNote Internal method ");
+
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+
+    EngagementSession.findOne({engagement_id: req.params.session,company: company, tenant: tenant},'notes', function (err, eng) {
+        if (err) {
+
+            jsonString = messageFormatter.FormatMessage(err, "getEngagementSessionNote Failed", false, undefined);
+
+        } else {
+
+            jsonString = messageFormatter.FormatMessage(undefined, "getEngagementSessionNote Successful", true, eng);
+
+        }
+
+        res.end(jsonString);
+    });
+
+
 
 };
 function AppendNoteToEngagementSession(req, res){
@@ -426,6 +462,7 @@ function AppendNoteToEngagementSession(req, res){
 
 
 };
+
 function RemoveNoteFromEngagementSession(req, res){
 
 
@@ -501,6 +538,7 @@ function AddEngagementSessionForProfile(req, res) {
 
     var jsonString;
 
+/*
 
     var otherQuery = {company: company, tenant: tenant, "contacts.type": category, "contacts.contact": contact};
     var orArray = [otherQuery];
@@ -523,6 +561,47 @@ function AddEngagementSessionForProfile(req, res) {
 
         orArray.push(queryObject);
     }else{
+
+        var queryObject = {company: company, tenant: tenant};
+        queryObject[category] = contact;
+
+        orArray.push(queryObject);
+    }
+
+
+    var orQuery = {$or: orArray};
+*/
+
+ var orArray = [];
+
+    if(category == 'call' || category == 'sms' ){
+
+        var otherQuery = {company: company, tenant: tenant, "contacts.type": "phone", "contacts.contact": contact};
+        orArray.push(otherQuery);
+
+        var queryObject = {company: company, tenant: tenant};
+        queryObject["phone"] = contact;
+
+        orArray.push(queryObject);
+
+        queryObject = {company: company, tenant: tenant};
+        queryObject["landnumber"] = contact;
+
+        orArray.push(queryObject);
+    } else if(category == 'facebook-post' || category == 'facebook-chat'){
+
+
+        var otherQuery = {company: company, tenant: tenant, "contacts.type": "facebook", "contacts.contact": contact};
+        orArray.push(otherQuery);
+
+        var queryObject = {company: company, tenant: tenant};
+        queryObject["facebook"] = contact;
+
+        orArray.push(queryObject);
+    }else{
+
+        var otherQuery = {company: company, tenant: tenant, "contacts.type": category, "contacts.contact": contact};
+        orArray.push(otherQuery);
 
         var queryObject = {company: company, tenant: tenant};
         queryObject[category] = contact;
@@ -818,6 +897,7 @@ module.exports.DeleteEngagement = DeleteEngagement;
 module.exports.AddEngagementSession = AddEngagementSession;
 module.exports.DeleteEngagementSession = DeleteEngagementSession;
 module.exports.GetEngagementSessions = GetEngagementSessions;
+module.exports.GetEngagementSessionNote = getEngagementSessionNote;
 module.exports.AppendNoteToEngagementSession = AppendNoteToEngagementSession;
 module.exports.RemoveNoteFromEngagementSession = RemoveNoteFromEngagementSession;
 module.exports.UpdateNoteInEngagementSession = UpdateNoteInEngagementSession;

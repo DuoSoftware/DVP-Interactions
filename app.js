@@ -73,9 +73,10 @@ server.del('/DVP/API/:version/Engagement/:id', authorization({resource:"engageme
 server.post('/DVP/API/:version/Engagement', authorization({resource:"engagement", action:"write"}), engagementService.CreateEngagement);
 server.post('/DVP/API/:version/Engagement/:id/EngagementSession', authorization({resource:"engagement", action:"write"}), engagementService.AddEngagementSession);
 server.put('/DVP/API/:version/Engagement/:profile/IsolatedEngagementSession/:session', authorization({resource:"engagement", action:"write"}), engagementService.AddIsolatedEngagementSession);
+server.get('/DVP/API/:version/Engagement/:id/EngagementSessions', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementSessions);
 server.del('/DVP/API/:version/Engagement/:id/EngagementSession/:session', authorization({resource:"engagement", action:"delete"}), engagementService.DeleteEngagementSession);
-server.get('/DVP/API/:version/Engagement/:id/EngagementSessions/:sessions', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementSessions);
 server.post('/DVP/API/:version/EngagementSession/:session/Note', authorization({resource:"engagement", action:"write"}), engagementService.AppendNoteToEngagementSession);
+server.get('/DVP/API/:version/EngagementSession/:session/Note', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementSessionNote);
 server.del('/DVP/API/:version/EngagementSession/:session/Note/:noteid', authorization({resource:"engagement", action:"delete"}), engagementService.RemoveNoteFromEngagementSession);
 server.put('/DVP/API/:version/EngagementSession/:session/Note/:noteid', authorization({resource:"engagement", action:"write"}), engagementService.UpdateNoteInEngagementSession);
 server.put('/DVP/API/:version/EngagementSession/:session/Move/:operation/From/:from/To/:to', authorization({resource:"engagement", action:"write"}), engagementService.MoveEngagementBetweenProfiles);
