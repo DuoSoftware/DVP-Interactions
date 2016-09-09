@@ -555,6 +555,7 @@ function AddEngagementSessionForProfile(req, res) {
 
     var jsonString;
 
+/*
 
     var otherQuery = {company: company, tenant: tenant, "contacts.type": category, "contacts.contact": contact};
     var orArray = [otherQuery];
@@ -577,6 +578,47 @@ function AddEngagementSessionForProfile(req, res) {
 
         orArray.push(queryObject);
     }else{
+
+        var queryObject = {company: company, tenant: tenant};
+        queryObject[category] = contact;
+
+        orArray.push(queryObject);
+    }
+
+
+    var orQuery = {$or: orArray};
+*/
+
+ var orArray = [];
+
+    if(category == 'call' || category == 'sms' ){
+
+        var otherQuery = {company: company, tenant: tenant, "contacts.type": "phone", "contacts.contact": contact};
+        orArray.push(otherQuery);
+
+        var queryObject = {company: company, tenant: tenant};
+        queryObject["phone"] = contact;
+
+        orArray.push(queryObject);
+
+        queryObject = {company: company, tenant: tenant};
+        queryObject["landnumber"] = contact;
+
+        orArray.push(queryObject);
+    } else if(category == 'facebook-post' || category == 'facebook-chat'){
+
+
+        var otherQuery = {company: company, tenant: tenant, "contacts.type": "facebook", "contacts.contact": contact};
+        orArray.push(otherQuery);
+
+        var queryObject = {company: company, tenant: tenant};
+        queryObject["facebook"] = contact;
+
+        orArray.push(queryObject);
+    }else{
+
+        var otherQuery = {company: company, tenant: tenant, "contacts.type": category, "contacts.contact": contact};
+        orArray.push(otherQuery);
 
         var queryObject = {company: company, tenant: tenant};
         queryObject[category] = contact;
