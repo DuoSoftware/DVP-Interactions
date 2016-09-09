@@ -323,7 +323,6 @@ function AddEngagementSession(req, res) {
         }
     });
 };
-
 function DeleteEngagementSession(req, res){
 
 
@@ -363,7 +362,6 @@ function DeleteEngagementSession(req, res){
 
 
 };
-
 function GetEngagementSessions(req, res){
 
 
@@ -396,7 +394,6 @@ function GetEngagementSessions(req, res){
     });
 
 };
-
 function AppendNoteToEngagementSession(req, res){
 
 
