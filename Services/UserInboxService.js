@@ -23,13 +23,21 @@ function AddMessageToInbox(req, res, next)
         var companyId = req.user.company;
         var tenantId = req.user.tenant;
         var profileId = req.body.profile;
+        var issuer = req.body.issuer;
 
         if (!companyId || !tenantId)
         {
             throw new Error("Invalid company or tenant");
         }
 
-        User.findOne({company: companyId, tenant: tenantId, _id: profileId}, function(err, user)
+        var query = {company: companyId, tenant: tenantId, _id: profileId};
+
+        if(issuer)
+        {
+            query = {company: companyId, tenant: tenantId, username: issuer}
+        }
+
+        User.findOne(query, function(err, user)
         {
             if(user)
             {
@@ -37,11 +45,13 @@ function AddMessageToInbox(req, res, next)
                 var inboxMsg = InboxMessage({
 
                     engagement_session: req.body.engagementSession,
-                    profile: profileId,
+                    profile: user._id,
                     message: req.body.message,
+                    from: req.body.from,
                     has_read: false,
                     has_replied: false,
                     message_type: req.body.msgType,
+                    heading: req.body.heading,
                     message_state: 'RECEIVED',
                     received_at: Date.now(),
                     company: companyId,
@@ -342,6 +352,7 @@ function GetUnreadMessages(req, res, next)
             if(limitCount)
             {
                 InboxMessage.find({company: companyId, tenant: tenantId, profile: profileId, has_read: 'false', message_state: 'RECEIVED', _id: { $gt: sinceId }})
+                    .sort({received_at: 'descending'})
                     .limit(limitCount)
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
@@ -349,6 +360,7 @@ function GetUnreadMessages(req, res, next)
             else
             {
                 InboxMessage.find({company: companyId, tenant: tenantId, profile: profileId, has_read: 'false', message_state: 'RECEIVED', _id: { $gt: sinceId }})
+                    .sort({received_at: 'descending'})
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
             }
@@ -358,6 +370,7 @@ function GetUnreadMessages(req, res, next)
             if(limitCount)
             {
                 InboxMessage.find({company: companyId, tenant: tenantId, profile: profileId, has_read: 'false', message_state: 'RECEIVED'})
+                    .sort({received_at: 'descending'})
                     .limit(limitCount)
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
@@ -365,6 +378,7 @@ function GetUnreadMessages(req, res, next)
             else
             {
                 InboxMessage.find({company: companyId, tenant: tenantId, profile: profileId, has_read: 'false', message_state: 'RECEIVED'})
+                    .sort({received_at: 'descending'})
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
             }
@@ -408,6 +422,7 @@ function GetReadMessages(req, res, next)
             if(limitCount)
             {
                 InboxMessage.find({company: companyId, tenant: tenantId, profile: profileId, has_read: 'true', message_state: 'RECEIVED', _id: { $gt: sinceId }})
+                    .sort({received_at: 'descending'})
                     .limit(limitCount)
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
@@ -415,6 +430,7 @@ function GetReadMessages(req, res, next)
             else
             {
                 InboxMessage.find({company: companyId, tenant: tenantId, profile: profileId, has_read: 'true', message_state: 'RECEIVED', _id: { $gt: sinceId }})
+                    .sort({received_at: 'descending'})
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
             }
@@ -424,6 +440,7 @@ function GetReadMessages(req, res, next)
             if(limitCount)
             {
                 InboxMessage.find({company: companyId, tenant: tenantId, profile: profileId, has_read: 'true', message_state: 'RECEIVED'})
+                    .sort({received_at: 'descending'})
                     .limit(limitCount)
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
@@ -431,6 +448,7 @@ function GetReadMessages(req, res, next)
             else
             {
                 InboxMessage.find({company: companyId, tenant: tenantId, profile: profileId, has_read: 'true', message_state: 'RECEIVED'})
+                    .sort({received_at: 'descending'})
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
             }
@@ -483,6 +501,7 @@ function GetInboxMessages(req, res, next)
             if(limitCount)
             {
                 InboxMessage.find(cond)
+                    .sort({received_at: 'descending'})
                     .limit(limitCount)
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
@@ -490,6 +509,7 @@ function GetInboxMessages(req, res, next)
             else
             {
                 InboxMessage.find(cond)
+                    .sort({received_at: 'descending'})
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
             }
@@ -499,6 +519,7 @@ function GetInboxMessages(req, res, next)
             if(limitCount)
             {
                 InboxMessage.find(cond)
+                    .sort({received_at: 'descending'})
                     .limit(limitCount)
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
@@ -506,6 +527,7 @@ function GetInboxMessages(req, res, next)
             else
             {
                 InboxMessage.find(cond)
+                    .sort({received_at: 'descending'})
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
             }
@@ -550,6 +572,7 @@ function GetDeletedMessages(req, res, next)
             if(limitCount)
             {
                 InboxMessage.find({company: companyId, tenant: tenantId, profile: profileId, message_state: 'DELETED', _id: { $gt: sinceId }})
+                    .sort({received_at: 'descending'})
                     .limit(limitCount)
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
@@ -557,6 +580,7 @@ function GetDeletedMessages(req, res, next)
             else
             {
                 InboxMessage.find({company: companyId, tenant: tenantId, profile: profileId, message_state: 'DELETED', _id: { $gt: sinceId }})
+                    .sort({received_at: 'descending'})
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
             }
@@ -566,6 +590,7 @@ function GetDeletedMessages(req, res, next)
             if(limitCount)
             {
                 InboxMessage.find({company: companyId, tenant: tenantId, profile: profileId, message_state: 'DELETED'})
+                    .sort({received_at: 'descending'})
                     .limit(limitCount)
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
@@ -573,6 +598,7 @@ function GetDeletedMessages(req, res, next)
             else
             {
                 InboxMessage.find({company: companyId, tenant: tenantId, profile: profileId, message_state: 'DELETED'})
+                    .sort({received_at: 'descending'})
                     .populate('engagement_session')
                     .exec(SendGetMessagesResponse.bind(this, res, reqId));
             }
