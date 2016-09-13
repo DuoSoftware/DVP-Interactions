@@ -302,7 +302,7 @@ function GetMessageInboxCounts(req, res, next)
                     };
 
                     var jsonString = messageFormatter.FormatMessage(null, "SUCCESS", true, countsObj);
-                    logger.error('[DVP-Interactions.GetUnReadMessages] - [%s] - API RESPONSE : %s', reqId, jsonString);
+                    logger.debug('[DVP-Interactions.GetUnReadMessages] - [%s] - API RESPONSE : %s', reqId, jsonString);
                     res.end(jsonString);
                 }
                 else
