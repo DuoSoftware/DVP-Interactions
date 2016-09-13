@@ -293,12 +293,12 @@ function GetMessageInboxCounts(req, res, next)
                 if(results && results.length === 6)
                 {
                     var countsObj = {
-                        Unread: results[0],
-                        All: results[1],
-                        Deleted: results[2],
-                        Facebook: results[3],
-                        Twitter: results[4],
-                        Notification: results[5]
+                        UNREAD: results[0],
+                        INBOX: results[1],
+                        DELETED: results[2],
+                        FACEBOOK: results[3],
+                        TWITTER: results[4],
+                        NOTIFICATION: results[5]
                     };
 
                     var jsonString = messageFormatter.FormatMessage(null, "SUCCESS", true, countsObj);
