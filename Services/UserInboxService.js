@@ -268,6 +268,7 @@ function GetMessageInboxCounts(req, res, next)
         arr.push(getDeleteCount.bind(this, profileId, companyId, tenantId));
         arr.push(getCountByType.bind(this, profileId, companyId, tenantId, 'FACEBOOK'));
         arr.push(getCountByType.bind(this, profileId, companyId, tenantId, 'TWITTER'));
+        arr.push(getCountByType.bind(this, profileId, companyId, tenantId, 'NOTIFICATION'));
 
         async.parallel(arr, function(err, results)
         {
@@ -279,14 +280,15 @@ function GetMessageInboxCounts(req, res, next)
             }
             else
             {
-                if(results && results.length === 5)
+                if(results && results.length === 6)
                 {
                     var countsObj = {
                         Unread: results[0],
                         All: results[1],
                         Deleted: results[2],
                         Facebook: results[3],
-                        Twitter: results[4]
+                        Twitter: results[4],
+                        Notification: results[5]
                     };
 
                     var jsonString = messageFormatter.FormatMessage(null, "SUCCESS", true, countsObj);
