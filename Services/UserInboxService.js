@@ -150,7 +150,21 @@ function SetMessageAsRead(req, res, next)
 
 }
 
-function DeleteMessage(req, res, next)
+var deleteSingleMessage = function(messageId, companyId, tenantId, profileId, callback)
+{
+    InboxMessage.findOneAndUpdate(
+        {company: companyId, tenant: tenantId, _id: messageId, profile: profileId},
+        {
+            message_state: 'DELETED'
+
+        }, function (err, inboxObj)
+        {
+            callback(null, true);
+
+        });
+};
+
+function DeleteMessages(req, res, next)
 {
     var reqId = uuid.v1();
     try
@@ -160,34 +174,35 @@ function DeleteMessage(req, res, next)
         var companyId = req.user.company;
         var tenantId = req.user.tenant;
         var profileId = req.params.profileId;
-        var msgId = req.params.messageId;
+        var msgIds = req.body.messageIds;
 
         if (!companyId || !tenantId)
         {
             throw new Error("Invalid company or tenant");
         }
 
-        InboxMessage.findOneAndUpdate(
-            {company: companyId, tenant: tenantId, _id: msgId, profile: profileId},
-            {
-                message_state: 'DELETED'
+        var asyncFuncArr = [];
 
-            }, function (err, inboxObj)
-            {
-                if(err)
-                {
-                    var jsonString = messageFormatter.FormatMessage(err, "Error deleting message", false, false);
-                    logger.error('[DVP-Interactions.DeleteMessage] - [%s] - API RESPONSE : %s', reqId, jsonString);
-                    res.end(jsonString);
-                }
-                else
-                {
-                    var jsonString = messageFormatter.FormatMessage(null, "Message deleted successfully", true, true);
-                    logger.debug('[DVP-Interactions.DeleteMessage] - [%s] - API RESPONSE : %s', reqId, jsonString);
-                    res.end(jsonString);
-                }
+        msgIds.forEach(function(msgId)
+        {
+            asyncFuncArr.push(deleteSingleMessage.bind(this, msgId, companyId, tenantId, profileId));
+        });
 
-            });
+        async.parallel(asyncFuncArr, function(err, results)
+        {
+            if(err)
+            {
+                var jsonString = messageFormatter.FormatMessage(err, "Error deleting messages", false, false);
+                logger.error('[DVP-Interactions.DeleteMessage] - [%s] - API RESPONSE : %s', reqId, jsonString);
+                res.end(jsonString);
+            }
+            else
+            {
+                var jsonString = messageFormatter.FormatMessage(null, "Messages deleted successfully", true, true);
+                logger.debug('[DVP-Interactions.DeleteMessage] - [%s] - API RESPONSE : %s', reqId, jsonString);
+                res.end(jsonString);
+            }
+        });
 
     }
     catch(ex)
@@ -544,6 +559,6 @@ module.exports.GetUnreadMessages = GetUnreadMessages;
 module.exports.GetReadMessages = GetReadMessages;
 module.exports.GetDeletedMessages = GetDeletedMessages;
 module.exports.SetMessageAsRead = SetMessageAsRead;
-module.exports.DeleteMessage = DeleteMessage;
+module.exports.DeleteMessages = DeleteMessages;
 module.exports.GetInboxMessages = GetInboxMessages;
 module.exports.GetMessageInboxCounts = GetMessageInboxCounts;
