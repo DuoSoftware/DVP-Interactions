@@ -242,6 +242,15 @@ var getUnreadCount = function(profileId, companyId, tenantId, callback)
         });
 };
 
+var getReadCount = function(profileId, companyId, tenantId, callback)
+{
+    InboxMessage.count({company: companyId, tenant: tenantId, profile: profileId, has_read: 'true', message_state: 'RECEIVED'},
+        function (err, unreadCount)
+        {
+            callback(err, unreadCount);
+        });
+};
+
 var getAllCount = function(profileId, companyId, tenantId, callback)
 {
     InboxMessage.count({company: companyId, tenant: tenantId, profile: profileId, message_state: 'RECEIVED'},
@@ -294,6 +303,7 @@ function GetMessageInboxCounts(req, res, next)
         arr.push(getCountByType.bind(this, profileId, companyId, tenantId, 'FACEBOOK'));
         arr.push(getCountByType.bind(this, profileId, companyId, tenantId, 'TWITTER'));
         arr.push(getCountByType.bind(this, profileId, companyId, tenantId, 'NOTIFICATION'));
+        arr.push(getReadCount.bind(this, profileId, companyId, tenantId));
 
         async.parallel(arr, function(err, results)
         {
@@ -305,7 +315,7 @@ function GetMessageInboxCounts(req, res, next)
             }
             else
             {
-                if(results && results.length === 6)
+                if(results && results.length === 7)
                 {
                     var countsObj = {
                         UNREAD: results[0],
@@ -313,7 +323,8 @@ function GetMessageInboxCounts(req, res, next)
                         DELETED: results[2],
                         FACEBOOK: results[3],
                         TWITTER: results[4],
-                        NOTIFICATION: results[5]
+                        NOTIFICATION: results[5],
+                        READ: results[6]
                     };
 
                     var jsonString = messageFormatter.FormatMessage(null, "SUCCESS", true, countsObj);
