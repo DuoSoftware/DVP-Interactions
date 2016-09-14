@@ -90,7 +90,7 @@ server.post('/DVP/API/:version/EngagementSessionForProfile', authorization({reso
 
 server.post('/DVP/API/:version/Inbox/Message', authorization({resource:"inbox", action:"write"}), inboxService.AddMessageToInbox);
 server.put('/DVP/API/:version/Inbox/:profileId/Message/:messageId/Read', authorization({resource:"inbox", action:"write"}), inboxService.SetMessageAsRead);
-server.del('/DVP/API/:version/Inbox/:profileId/Messages', authorization({resource:"inbox", action:"delete"}), inboxService.DeleteMessages);
+server.post('/DVP/API/:version/Inbox/:profileId/RemoveMessages', authorization({resource:"inbox", action:"delete"}), inboxService.DeleteMessages);
 server.get('/DVP/API/:version/Inbox/:profileId/Messages/Unread', authorization({resource:"inbox", action:"read"}), inboxService.GetUnreadMessages);
 server.get('/DVP/API/:version/Inbox/:profileId/Messages/Read', authorization({resource:"inbox", action:"read"}), inboxService.GetReadMessages);
 server.get('/DVP/API/:version/Inbox/:profileId/Messages/All', authorization({resource:"inbox", action:"read"}), inboxService.GetInboxMessages);
