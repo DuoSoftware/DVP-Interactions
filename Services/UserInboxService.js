@@ -174,7 +174,16 @@ function DeleteMessages(req, res, next)
         var companyId = req.user.company;
         var tenantId = req.user.tenant;
         var profileId = req.params.profileId;
-        var msgIds = JSON.parse(req.body).messageIds;
+        var msgIds = null;
+
+        if(typeof req.body === 'string')
+        {
+            msgIds = JSON.parse(req.body).messageIds;
+        }
+        else
+        {
+            msgIds = req.body.messageIds;
+        }
 
         if (!companyId || !tenantId)
         {
