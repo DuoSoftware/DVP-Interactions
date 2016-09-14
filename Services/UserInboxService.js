@@ -108,7 +108,7 @@ function SetMessageAsRead(req, res, next)
 
         var companyId = req.user.company;
         var tenantId = req.user.tenant;
-        var profileId = req.params.profile;
+        var profileId = req.params.profileId;
         var msgId = req.params.messageId;
 
         if (!companyId || !tenantId)
