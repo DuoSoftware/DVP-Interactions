@@ -462,7 +462,6 @@ function AppendNoteToEngagementSession(req, res){
 
 
 };
-
 function RemoveNoteFromEngagementSession(req, res){
 
 
