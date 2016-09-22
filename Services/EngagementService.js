@@ -670,9 +670,9 @@ function AddEngagementSessionForProfile(req, res) {
 
                                     } else {
 
-                                        session.profile = users[0].id;
+                                        engage.profile = users[0].id;
 
-                                        jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, session);
+                                        jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
 
                                     }
 
