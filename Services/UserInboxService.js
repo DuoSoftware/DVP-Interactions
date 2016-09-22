@@ -200,9 +200,6 @@ var SendGetMessagesResponse = function(res, reqId, err, msgs)
     }
 }
 
-
-
-
 function GetUnreadMessages(req, res, next)
 {
     var reqId = uuid.v1();

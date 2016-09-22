@@ -672,7 +672,7 @@ function AddEngagementSessionForProfile(req, res) {
 
                                         session.profile = users[0].id;
 
-                                        jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engagementSession);
+                                        jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, session);
 
                                     }
 
