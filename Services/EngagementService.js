@@ -300,8 +300,39 @@ function AddEngagementSession(req, res) {
             res.end(jsonString);
         } else {
 
+            Engagement.findOneAndUpdate({
+                company: company,
+                tenant: tenant,
+                profile: req.params.id
+            }, {
+                $addToSet: {
+                    engagements: engagementSession._id
+                },
+                $setOnInsert: {
 
+                    profile: req.params.id,
+                    created_at: Date.now(),
+                    company: company,
+                    tenant: tenant
+                },
+                $set:{
 
+                    updated_at: Date.now(),
+                }
+
+            },{upsert:true, new: true}, function (err, session) {
+                if (err) {
+                    jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+
+                } else {
+                    engage.profile_id = users[0].id;
+                    jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
+                }
+
+                res.end(jsonString);
+
+            });
+            /*
             Engagement.findOneAndUpdate({company: company, tenant: tenant, _id: req.params.id}, {
                 $addToSet: {
                     engagements: engagementSession._id
@@ -319,6 +350,7 @@ function AddEngagementSession(req, res) {
 
                 res.end(jsonString);
             });
+            */
 
         }
     });
@@ -653,14 +685,15 @@ function AddEngagementSessionForProfile(req, res) {
                                     },
                                     $setOnInsert: {
                                         //updated_at: Date.now(),
+                                        profile: users[0].id,
                                         created_at: Date.now(),
                                         company: company,
                                         tenant: tenant
                                     },
                                     $set:{
 
-                                        profile: users[0].id,
-                                        updated_at: Date.now(),
+
+                                        updated_at: Date.now()
                                     }
 
                                 },{upsert:true, new: true}, function (err, session) {
