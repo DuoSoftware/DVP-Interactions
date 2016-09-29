@@ -325,7 +325,7 @@ function AddEngagementSession(req, res) {
                     jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
 
                 } else {
-                    engage.profile_id = users[0].id;
+                    //engage.profile_id = users[0].id;
                     jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
                 }
 
