@@ -81,6 +81,8 @@ server.del('/DVP/API/:version/EngagementSession/:session/Note/:noteid', authoriz
 server.put('/DVP/API/:version/EngagementSession/:session/Note/:noteid', authorization({resource:"engagement", action:"write"}), engagementService.UpdateNoteInEngagementSession);
 server.put('/DVP/API/:version/EngagementSession/:session/Move/:operation/From/:from/To/:to', authorization({resource:"engagement", action:"write"}), engagementService.MoveEngagementBetweenProfiles);
 server.post('/DVP/API/:version/EngagementSessionForProfile', authorization({resource:"engagement", action:"write"}), engagementService.AddEngagementSessionForProfile);
+server.get('/DVP/API/:version/EngagementSessionCount/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementCounts);
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

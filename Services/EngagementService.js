@@ -916,6 +916,64 @@ function AddIsolatedEngagementSession(req, res) {
         }
     });
 };
+function GetEngagementCounts(req,res){
+
+
+    logger.debug("DVP-Interactions.GetEngagement Internal method ");
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+    Engagement.findOne({company: company, tenant: tenant, profile: req.params.id}, function(err, engagement) {
+        if (err) {
+
+            jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);
+
+        }else {
+
+            if (engagement) {
+
+
+                jsonString = messageFormatter.FormatMessage(err, "Get Engagements Successful", true, engagement);
+
+
+                var aggregator = [
+
+                    {
+                        $match: {engagement_id: {$in: engagement.engagements}},
+
+                    },
+
+                    {
+                        "$group": {_id: "$channel", count: {$sum: 1}}
+                    }
+                ];
+
+                EngagementSession.aggregate(aggregator, function (err, tickets) {
+                    if (err) {
+                        jsonString = messageFormatter.FormatMessage(err, "Get Engagements count Failed", false, undefined);
+                    } else {
+
+
+                        jsonString = messageFormatter.FormatMessage(undefined, "Get Engagements count Successful", true, tickets);
+
+                    }
+                    res.end(jsonString);
+                });
+
+
+            }else{
+
+                jsonString = messageFormatter.FormatMessage(undefined, "No Engagements Found", false, undefined);
+                res.end(jsonString);
+
+            }
+        }
+
+
+    });
+
+
+}
 
 
 
@@ -937,4 +995,5 @@ module.exports.AddEngagementSessionForProfile = AddEngagementSessionForProfile;
 module.exports.MoveEngagementBetweenProfiles = MoveEngagementBetweenProfiles;
 module.exports.GetIsolatedEngagenetSessions = GetIsolatedEngagementSessions;
 module.exports.AddIsolatedEngagementSession = AddIsolatedEngagementSession;
+module.exports.GetEngagementCounts= GetEngagementCounts;
 
