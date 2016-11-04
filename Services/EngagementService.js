@@ -797,7 +797,7 @@ function MoveEngagementBetweenProfiles(req, res){
 
                                 } else {
 
-                                    jsonString = messageFormatter.FormatMessage(undefined, "Remove Engagement successfully", false, engagement);
+                                    jsonString = messageFormatter.FormatMessage(undefined, "Remove Engagement successfully", true, engagement);
 
                                 }
 
