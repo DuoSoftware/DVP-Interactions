@@ -758,7 +758,7 @@ function MoveEngagementBetweenProfiles(req, res){
     var tenant = parseInt(req.user.tenant);
     var jsonString;
 
-    req.body.updated_at = Date.now();
+
     EngagementSession.findOne({engagement_id: req.params.session,company: company, tenant: tenant}, function (err, session) {
         if (err || (req.params.from == req.params.to)) {
 
@@ -775,6 +775,7 @@ function MoveEngagementBetweenProfiles(req, res){
                     $addToSet: {
                         engagements: session._id
                     }
+
                 }, function (err, engagement) {
                     if (err) {
 
