@@ -668,53 +668,56 @@ function AddEngagementSessionForProfile(req, res) {
 
             });
 
+            if (req.body.user)
+                engagementSession.user_info = req.body.user;
 
-                   engagementSession.save(function (err, engage) {
+
+            engagementSession.save(function (err, engage) {
+                if (err) {
+                    jsonString = messageFormatter.FormatMessage(err, "Engagement Session save failed", false, undefined);
+                    res.end(jsonString);
+                } else {
+
+                    Engagement.findOneAndUpdate({
+                        company: company,
+                        tenant: tenant,
+                        profile: users[0].id
+                    }, {
+                        $addToSet: {
+                            engagements: engagementSession._id
+                        },
+                        $setOnInsert: {
+                            //updated_at: Date.now(),
+                            profile: users[0].id,
+                            created_at: Date.now(),
+                            company: company,
+                            tenant: tenant
+                        },
+                        $set: {
+
+
+                            updated_at: Date.now()
+                        }
+
+                    }, {upsert: true, new: true}, function (err, session) {
                         if (err) {
-                            jsonString = messageFormatter.FormatMessage(err, "Engagement Session save failed", false, undefined);
-                            res.end(jsonString);
+
+                            jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+
                         } else {
 
-                                Engagement.findOneAndUpdate({
-                                    company: company,
-                                    tenant: tenant,
-                                    profile: users[0].id
-                                }, {
-                                    $addToSet: {
-                                        engagements: engagementSession._id
-                                    },
-                                    $setOnInsert: {
-                                        //updated_at: Date.now(),
-                                        profile: users[0].id,
-                                        created_at: Date.now(),
-                                        company: company,
-                                        tenant: tenant
-                                    },
-                                    $set:{
+                            engage.profile_id = users[0].id;
 
-
-                                        updated_at: Date.now()
-                                    }
-
-                                },{upsert:true, new: true}, function (err, session) {
-                                    if (err) {
-
-                                        jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
-
-                                    } else {
-
-                                        engage.profile_id = users[0].id;
-
-                                        jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
-
-                                    }
-
-                                    res.end(jsonString);
-
-                                });
+                            jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
 
                         }
+
+                        res.end(jsonString);
+
                     });
+
+                }
+            });
 
         } else {
 
@@ -734,6 +737,10 @@ function AddEngagementSessionForProfile(req, res) {
                 updated_at: Date.now()
 
             });
+
+            if(req.body.user)
+                engagementSession.user_info = req.body.user;
+
 
             engagementSession.save(function (err, engage) {
                 if (err) {
