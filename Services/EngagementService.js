@@ -896,7 +896,7 @@ function AddIsolatedEngagementSession(req, res) {
                         updated_at: Date.now()
                     },
                     $setOnInsert: {
-                        updated_at: Date.now(),
+                        //updated_at: Date.now(),
                         created_at: Date.now(),
                         company: company,
                         tenant: tenant
