@@ -308,7 +308,8 @@ function AddEngagementSession(req, res) {
 
                 $push: {
                     engagements: {
-                        $each: [engagementSession._id]
+                        $each: [engagementSession._id],
+                        $position: 0
                     }
                 },
                 $setOnInsert: {
@@ -424,6 +425,12 @@ function GetEngagementSessions(req, res){
         }else {
 
             if (engagement) {
+
+                engagement.sort(function(a, b) {
+                    // Sort docs by the order of their _id values in ids.
+                    return paramArr.indexOf(a.engagement_id) - paramArr.indexOf(b.engagement_id);
+                });
+
 
 
                 jsonString = messageFormatter.FormatMessage(err, "Get EngagementSession Successful", true, engagement);
@@ -690,7 +697,8 @@ function AddEngagementSessionForProfile(req, res) {
 
                         $push: {
                             engagements: {
-                                $each: [engagementSession._id]
+                                $each: [engagementSession._id],
+                                $position: 0
                             }
                         },
 
@@ -791,7 +799,8 @@ function MoveEngagementBetweenProfiles(req, res){
                 Engagement.findOneAndUpdate({company: company, tenant: tenant, profile: req.params.to}, {
                     $push: {
                         engagements: {
-                            $each: [session._id]
+                            $each: [session._id],
+                            $position: 0
                         }
                     }
 
@@ -901,7 +910,8 @@ function AddIsolatedEngagementSession(req, res) {
                 Engagement.findOneAndUpdate({company: company, tenant: tenant, profile: req.params.profile}, {
                     $push: {
                         engagements: {
-                            $each: [engagementSession._id]
+                            $each: [engagementSession._id],
+                            $position: 0
                         }
                     },
                     $set: {
