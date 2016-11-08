@@ -309,7 +309,7 @@ function AddEngagementSession(req, res) {
                 $push: {
                     engagements: {
                         $each: [engagementSession._id],
-                        $position: 1
+                        $position: 0
                     }
                 },
                 $setOnInsert: {
@@ -692,7 +692,7 @@ function AddEngagementSessionForProfile(req, res) {
                         $push: {
                             engagements: {
                                 $each: [engagementSession._id],
-                                $position: 1
+                                $position: 0
                             }
                         },
 
@@ -794,7 +794,7 @@ function MoveEngagementBetweenProfiles(req, res){
                     $push: {
                         engagements: {
                             $each: [session._id],
-                            $position: 1
+                            $position: 0
                         }
                     }
 
@@ -905,7 +905,7 @@ function AddIsolatedEngagementSession(req, res) {
                     $push: {
                         engagements: {
                             $each: [engagementSession._id],
-                            $position: 1
+                            $position: 0
                         }
                     },
                     $set: {
