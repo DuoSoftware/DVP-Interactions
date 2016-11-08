@@ -308,8 +308,7 @@ function AddEngagementSession(req, res) {
 
                 $push: {
                     engagements: {
-                        $each: [engagementSession._id],
-                        $position: 0
+                        $each: [engagementSession._id]
                     }
                 },
                 $setOnInsert: {
@@ -691,8 +690,7 @@ function AddEngagementSessionForProfile(req, res) {
 
                         $push: {
                             engagements: {
-                                $each: [engagementSession._id],
-                                $position: 0
+                                $each: [engagementSession._id]
                             }
                         },
 
@@ -793,8 +791,7 @@ function MoveEngagementBetweenProfiles(req, res){
                 Engagement.findOneAndUpdate({company: company, tenant: tenant, profile: req.params.to}, {
                     $push: {
                         engagements: {
-                            $each: [session._id],
-                            $position: 0
+                            $each: [session._id]
                         }
                     }
 
@@ -904,8 +901,7 @@ function AddIsolatedEngagementSession(req, res) {
                 Engagement.findOneAndUpdate({company: company, tenant: tenant, profile: req.params.profile}, {
                     $push: {
                         engagements: {
-                            $each: [engagementSession._id],
-                            $position: 0
+                            $each: [engagementSession._id]
                         }
                     },
                     $set: {
