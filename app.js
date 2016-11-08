@@ -46,11 +46,14 @@ var connectionstring = util.format('mongodb://%s:%s@%s:%d/%s',mongouser,mongopas
 
 
 mongoose.connection.on('error', function (err) {
-    throw new Error(err);
+    //throw new Error(err);
+    logger.error(err)
 });
 
 mongoose.connection.on('disconnected', function() {
-    throw new Error('Could not connect to database');
+    //throw new Error('Could not connect to database');
+    logger.error('Could not connect to database')
+
 });
 
 mongoose.connection.once('open', function() {

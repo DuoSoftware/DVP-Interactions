@@ -305,8 +305,12 @@ function AddEngagementSession(req, res) {
                 tenant: tenant,
                 profile: req.params.id
             }, {
-                $addToSet: {
-                    engagements: engagementSession._id
+
+                $push: {
+                    engagements: {
+                        $each: [engagementSession._id],
+                        $position: 1
+                    }
                 },
                 $setOnInsert: {
 
@@ -683,9 +687,17 @@ function AddEngagementSessionForProfile(req, res) {
                         tenant: tenant,
                         profile: users[0].id
                     }, {
-                        $addToSet: {
-                            engagements: engagementSession._id
+
+
+                        $push: {
+                            engagements: {
+                                $each: [engagementSession._id],
+                                $position: 1
+                            }
                         },
+
+
+
                         $setOnInsert: {
                             //updated_at: Date.now(),
                             profile: users[0].id,
@@ -779,8 +791,11 @@ function MoveEngagementBetweenProfiles(req, res){
 
 
                 Engagement.findOneAndUpdate({company: company, tenant: tenant, profile: req.params.to}, {
-                    $addToSet: {
-                        engagements: session._id
+                    $push: {
+                        engagements: {
+                            $each: [session._id],
+                            $position: 1
+                        }
                     }
 
                 }, function (err, engagement) {
@@ -887,8 +902,11 @@ function AddIsolatedEngagementSession(req, res) {
             if (engagementSession) {
 
                 Engagement.findOneAndUpdate({company: company, tenant: tenant, profile: req.params.profile}, {
-                    $addToSet: {
-                        engagements: engagementSession._id
+                    $push: {
+                        engagements: {
+                            $each: [engagementSession._id],
+                            $position: 1
+                        }
                     },
                     $set: {
 
