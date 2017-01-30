@@ -639,6 +639,16 @@ function AddEngagementSessionForProfile(req, res) {
         queryObject["facebook"] = contact;
 
         orArray.push(queryObject);
+    }else if(category == 'chat'){
+
+
+        var otherQuery = {company: company, tenant: tenant, "contacts.type": "email", "contacts.contact": contact};
+        orArray.push(otherQuery);
+
+        var queryObject = {company: company, tenant: tenant};
+        queryObject["email"] = contact;
+
+        orArray.push(queryObject);
     }else{
 
         var otherQuery = {company: company, tenant: tenant, "contacts.type": category, "contacts.contact": contact};
