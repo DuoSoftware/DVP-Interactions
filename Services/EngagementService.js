@@ -696,8 +696,7 @@ function AddEngagementSessionForProfile(req, res) {
 
             ////////////////////////exact one user///////////////////////////////////////////////
 
-            if(contactInfo)
-                engagementSession.contact = contactInfo;
+
 
             var engagementSession = EngagementSession({
 
@@ -716,6 +715,10 @@ function AddEngagementSessionForProfile(req, res) {
                 updated_at: Date.now()
 
             });
+
+
+            if(contactInfo)
+                engagementSession.contact = contactInfo;
 
             if (req.body.user)
                 engagementSession.user_info = req.body.user;
