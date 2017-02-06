@@ -577,7 +577,7 @@ function AddEngagementSessionForProfile(req, res) {
         contact= req.body.channel_to;
 
     var contactInfo = {
-        contact: req.body.channel_id,
+        contact_name: req.body.channel_id,
         type: category,
         display: req.body.channel_from,
         verified: true,
@@ -690,6 +690,9 @@ function AddEngagementSessionForProfile(req, res) {
 
             ////////////////////////exact one user///////////////////////////////////////////////
 
+            if(contactInfo)
+                engagementSession.contact = contactInfo;
+
             var engagementSession = EngagementSession({
 
                 _id: req.body.engagement_id,
@@ -776,7 +779,6 @@ function AddEngagementSessionForProfile(req, res) {
                 channel: req.body.channel,
                 channel_from: req.body.channel_from,
                 channel_to: req.body.channel_to,
-                contact: contactInfo,
                 company: company,
                 direction: req.body.direction,
                 body: req.body.body,
@@ -789,6 +791,9 @@ function AddEngagementSessionForProfile(req, res) {
 
             if(req.body.user)
                 engagementSession.user_info = req.body.user;
+
+            if(contactInfo)
+                engagementSession.contact = contactInfo;
 
 
             engagementSession.save(function (err, engage) {
