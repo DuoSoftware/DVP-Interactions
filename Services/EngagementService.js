@@ -587,6 +587,8 @@ function AddEngagementSessionForProfile(req, res) {
         raw: req.body.raw
     };
 
+    logger.info(contactInfo);
+
 
     var jsonString;
 
