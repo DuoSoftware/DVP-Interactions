@@ -576,6 +576,14 @@ function AddEngagementSessionForProfile(req, res) {
     if(req.body.direction == 'outbound')
         contact= req.body.channel_to;
 
+    var contactInfo = {
+        contact: req.body.channel_id,
+        type: category,
+        display: req.body.channel_from,
+        verified: true,
+        raw: req.body.raw
+    };
+
 
     var jsonString;
 
@@ -629,8 +637,8 @@ function AddEngagementSessionForProfile(req, res) {
         queryObject["landnumber"] = contact;
 
         orArray.push(queryObject);
-    } else if(category == 'facebook-post' || category == 'facebook-chat'){
 
+    } else if(category == 'facebook-post' || category == 'facebook-chat'){
 
         var otherQuery = {company: company, tenant: tenant, "contacts.type": "facebook", "contacts.contact": contact};
         orArray.push(otherQuery);
@@ -639,8 +647,8 @@ function AddEngagementSessionForProfile(req, res) {
         queryObject["facebook"] = contact;
 
         orArray.push(queryObject);
-    }else if(category == 'chat'){
 
+    }else if(category == 'chat'){
 
         var otherQuery = {company: company, tenant: tenant, "contacts.type": "email", "contacts.contact": contact};
         orArray.push(otherQuery);
@@ -649,6 +657,17 @@ function AddEngagementSessionForProfile(req, res) {
         queryObject["email"] = contact;
 
         orArray.push(queryObject);
+
+    }else if(category == 'skype'){
+
+        var otherQuery = {company: company, tenant: tenant, "contacts.type": "skype", "contacts.contact": contact};
+        orArray.push(otherQuery);
+
+        var queryObject = {company: company, tenant: tenant};
+        queryObject["skype"] = contact;
+
+        orArray.push(queryObject);
+
     }else{
 
         var otherQuery = {company: company, tenant: tenant, "contacts.type": category, "contacts.contact": contact};
@@ -680,6 +699,7 @@ function AddEngagementSessionForProfile(req, res) {
                 channel_to: req.body.channel_to,
                 direction: req.body.direction,
                 body: req.body.body,
+                contact: contactInfo,
                 company: company,
                 tenant: tenant,
                 has_profile: true,
@@ -756,6 +776,7 @@ function AddEngagementSessionForProfile(req, res) {
                 channel: req.body.channel,
                 channel_from: req.body.channel_from,
                 channel_to: req.body.channel_to,
+                contact: contactInfo,
                 company: company,
                 direction: req.body.direction,
                 body: req.body.body,
