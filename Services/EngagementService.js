@@ -686,6 +686,9 @@ function AddEngagementSessionForProfile(req, res) {
     var orQuery = {$or: orArray};
 
 
+    logger.info(orQuery);
+
+
     ExternalUser.find(orQuery, function (err, users) {
 
         ////////////////////////////////////External users found/////////////////////////////////////////////
