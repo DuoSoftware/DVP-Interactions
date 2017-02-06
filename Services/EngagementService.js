@@ -573,6 +573,9 @@ function AddEngagementSessionForProfile(req, res) {
     var category = req.body.channel;
 
     var contact = req.body.channel_from;
+    //if(req.body.channel_id)
+    //    contact = req.body.channel_id;
+
     if(req.body.direction == 'outbound')
         contact= req.body.channel_to;
 
