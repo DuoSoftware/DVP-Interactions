@@ -849,9 +849,22 @@ function MoveEngagementBetweenProfiles(req, res){
                             $each: [session._id],
                             $position: 0
                         }
+                    },
+
+
+                    $setOnInsert: {
+
+                        profile: req.params.to,
+                        created_at: Date.now(),
+                        company: company,
+                        tenant: tenant
+                    },
+                    $set: {
+
+                        updated_at: Date.now(),
                     }
 
-                }, function (err, engagement) {
+                },{upsert:true, new: true}, function (err, engagement) {
                     if (err) {
 
                         jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
@@ -864,7 +877,8 @@ function MoveEngagementBetweenProfiles(req, res){
                                 profile: req.params.from,
                                 company: company,
                                 tenant: tenant
-                            }, {$pull: {'engagements': session._id}}, function (err, engagement) {
+                            }, {
+                                $pull: {'engagements': session._id}}, function (err, engagement) {
                                 if (err) {
 
                                     jsonString = messageFormatter.FormatMessage(err, "Remove Engagement Failed", false, undefined);
