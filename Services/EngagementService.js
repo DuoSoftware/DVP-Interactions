@@ -573,8 +573,21 @@ function AddEngagementSessionForProfile(req, res) {
     var category = req.body.channel;
 
     var contact = req.body.channel_from;
+    //if(req.body.channel_id)
+    //    contact = req.body.channel_id;
+
     if(req.body.direction == 'outbound')
         contact= req.body.channel_to;
+
+    var contactInfo = {
+        contact_name: req.body.channel_id,
+        type: category,
+        display: req.body.channel_from,
+        verified: true,
+        raw: req.body.raw
+    };
+
+    logger.info(contactInfo);
 
 
     var jsonString;
@@ -629,8 +642,8 @@ function AddEngagementSessionForProfile(req, res) {
         queryObject["landnumber"] = contact;
 
         orArray.push(queryObject);
-    } else if(category == 'facebook-post' || category == 'facebook-chat'){
 
+    } else if(category == 'facebook-post' || category == 'facebook-chat'){
 
         var otherQuery = {company: company, tenant: tenant, "contacts.type": "facebook", "contacts.contact": contact};
         orArray.push(otherQuery);
@@ -639,8 +652,8 @@ function AddEngagementSessionForProfile(req, res) {
         queryObject["facebook"] = contact;
 
         orArray.push(queryObject);
-    }else if(category == 'chat'){
 
+    }else if(category == 'chat'){
 
         var otherQuery = {company: company, tenant: tenant, "contacts.type": "email", "contacts.contact": contact};
         orArray.push(otherQuery);
@@ -649,6 +662,17 @@ function AddEngagementSessionForProfile(req, res) {
         queryObject["email"] = contact;
 
         orArray.push(queryObject);
+
+    }else if(category == 'skype'){
+
+        var otherQuery = {company: company, tenant: tenant, "contacts.type": "skype", "contacts.contact": contact};
+        orArray.push(otherQuery);
+
+        var queryObject = {company: company, tenant: tenant};
+        queryObject["skype"] = contact;
+
+        orArray.push(queryObject);
+
     }else{
 
         var otherQuery = {company: company, tenant: tenant, "contacts.type": category, "contacts.contact": contact};
@@ -664,12 +688,17 @@ function AddEngagementSessionForProfile(req, res) {
     var orQuery = {$or: orArray};
 
 
+    logger.info(orQuery);
+
+
     ExternalUser.find(orQuery, function (err, users) {
 
         ////////////////////////////////////External users found/////////////////////////////////////////////
         if (!err && users && users.length == 1) {
 
             ////////////////////////exact one user///////////////////////////////////////////////
+
+
 
             var engagementSession = EngagementSession({
 
@@ -680,6 +709,7 @@ function AddEngagementSessionForProfile(req, res) {
                 channel_to: req.body.channel_to,
                 direction: req.body.direction,
                 body: req.body.body,
+                contact: contactInfo,
                 company: company,
                 tenant: tenant,
                 has_profile: true,
@@ -687,6 +717,10 @@ function AddEngagementSessionForProfile(req, res) {
                 updated_at: Date.now()
 
             });
+
+
+            if(contactInfo)
+                engagementSession.contact = contactInfo;
 
             if (req.body.user)
                 engagementSession.user_info = req.body.user;
@@ -769,6 +803,9 @@ function AddEngagementSessionForProfile(req, res) {
             if(req.body.user)
                 engagementSession.user_info = req.body.user;
 
+            if(contactInfo)
+                engagementSession.contact = contactInfo;
+
 
             engagementSession.save(function (err, engage) {
                 if (err) {
@@ -812,9 +849,22 @@ function MoveEngagementBetweenProfiles(req, res){
                             $each: [session._id],
                             $position: 0
                         }
+                    },
+
+
+                    $setOnInsert: {
+
+                        profile: req.params.to,
+                        created_at: Date.now(),
+                        company: company,
+                        tenant: tenant
+                    },
+                    $set: {
+
+                        updated_at: Date.now(),
                     }
 
-                }, function (err, engagement) {
+                },{upsert:true, new: true}, function (err, engagement) {
                     if (err) {
 
                         jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
@@ -827,7 +877,8 @@ function MoveEngagementBetweenProfiles(req, res){
                                 profile: req.params.from,
                                 company: company,
                                 tenant: tenant
-                            }, {$pull: {'engagements': session._id}}, function (err, engagement) {
+                            }, {
+                                $pull: {'engagements': session._id}}, function (err, engagement) {
                                 if (err) {
 
                                     jsonString = messageFormatter.FormatMessage(err, "Remove Engagement Failed", false, undefined);
