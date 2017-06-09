@@ -10,6 +10,27 @@ var EngagementSession = require('dvp-mongomodels/model/Engagement').EngagementSe
 var EngagementNote = require('dvp-mongomodels/model/Engagement').EngagementNote;
 var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
 var ExternalUser = require('dvp-mongomodels/model/ExternalUser');
+var amqp = require('amqp');
+
+
+////////////////////////////rabbitmq//////////////////////////////////////////////////////
+var queueHost = format('amqp://{0}:{1}@{2}:{3}', config.RabbitMQ.user, config.RabbitMQ.password, config.RabbitMQ.ip, config.RabbitMQ.port);
+var queueConnection = amqp.createConnection({
+    url: queueHost
+});
+queueConnection.on('ready', function () {
+
+    logger.info("Confection with the queue is OK");
+
+});
+
+
+queueConnection.on('error', function (error) {
+
+    logger.error("Issue in ards", error);
+
+});
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -1067,9 +1088,72 @@ function GetEngagementCounts(req,res){
 
 
 }
+function Interact(req, res) {
 
 
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+    var queueName;
 
+    try {
+        var message = {
+            from: req.body.from,
+            to: req.body.to,
+            body: req.body.body,
+            update_comment: true,
+            company: company,
+            tenant: tenant,
+            Parameters: req.body.Parameters,
+            template: req.body.template,
+            author: req.user.iss
+        };
+
+        if (req.body.channel == 'twitter') {
+            queueName = 'TWEETOUT';
+        } else if (req.body.channel == 'sms') {
+            queueName = 'SMSOUT';
+        } else if (req.body.channel == 'email') {
+            queueName = 'EMAILOUT';
+        } else if (req.body.channel == 'facebook-post') {
+            queueName = 'FACEBOOKOUT';
+            if (req.body.contact && req.body.contact && req.body.contact.raw && req.body.contact.raw.id) {
+
+                message.from = req.body.contact.raw.id;
+            }
+
+        } else if (req.body.channel == 'facebook-chat') {
+            queueName = 'FACEBOOKOUT';
+            if (req.body.contact && req.body.contact && req.body.contact.raw && req.body.contact.raw.id) {
+
+                message.from = req.body.contact.raw.id;
+            }
+
+        } else {
+            jsonString = messageFormatter.FormatMessage(undefined, "Given channel does not  support engagement", false, undefined);
+            res.end(jsonString);
+            return;
+        }
+
+
+        queueConnection.publish(queueName, message, {
+            contentType: 'application/json'
+        });
+
+        jsonString = messageFormatter.FormatMessage(undefined, "Message published to the queue", true, message);
+        res.end(jsonString);
+
+    } catch (exp) {
+
+        //console.log(exp);
+        jsonString = messageFormatter.FormatMessage(exp, "Message published to the queue", true, undefined);
+        res.end(jsonString);
+    }
+
+};
+
+
+module.exports.Interact = Interact;
 module.exports.GetEngagements = GetEngagements;
 module.exports.GetEngagement = GetEngagement;
 module.exports.GetEngagementsWithData = GetEngagementsWithData;
