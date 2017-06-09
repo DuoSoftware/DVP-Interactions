@@ -1109,6 +1109,7 @@ function Interact(req, res) {
             tenant: tenant,
             Parameters: req.body.parameters,
             template: req.body.template,
+            attachments: req.body.attachments,
             author: req.user.iss
         };
 
