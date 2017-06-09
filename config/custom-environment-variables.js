@@ -33,7 +33,8 @@ module.exports = {
         "port":"SYS_MONGO_PORT",
         "dbname":"SYS_MONGO_DB",
         "password":"SYS_MONGO_PASSWORD",
-        "user":"SYS_MONGO_USER"
+        "user":"SYS_MONGO_USER",
+        "replicaset" :"SYS_MONGO_REPLICASETNAME"
     },
 
 
@@ -52,6 +53,16 @@ module.exports = {
         "port": "LB_PORT"
 
     },
+
+    "RabbitMQ":
+    {
+        "ip": "SYS_RABBITMQ_HOST",
+        "port": "SYS_RABBITMQ_PORT",
+        "user": "SYS_RABBITMQ_USER",
+        "password": "SYS_RABBITMQ_PASSWORD"
+    },
+
+
     "Services" : {
         "accessToken": "HOST_TOKEN",
         "resourceServiceHost": "SYS_RESOURCESERVICE_HOST",

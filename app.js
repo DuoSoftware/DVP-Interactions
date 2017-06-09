@@ -74,8 +74,9 @@ var mongoreplicaset= config.Mongo.replicaset;
 
 var mongoose = require('mongoose');
 var connectionstring = '';
+mongoip = mongoip.split(',');
 if(util.isArray(mongoip)){
-
+ if(mongoip.length > 1){    
     mongoip.forEach(function(item){
         connectionstring += util.format('%s:%d,',item,mongoport)
     });
@@ -86,9 +87,14 @@ if(util.isArray(mongoip)){
     if(mongoreplicaset){
         connectionstring = util.format('%s?replicaSet=%s',connectionstring,mongoreplicaset) ;
     }
+ }
+    else
+    {
+        connectionstring = util.format('mongodb://%s:%s@%s:%d/%s',mongouser,mongopass,mongoip[0],mongoport,mongodb);
+    }
 }else{
 
-    connectionstring = util.format('mongodb://%s:%s@%s:%d/%s',mongouser,mongopass,mongoip,mongoport,mongodb)
+    connectionstring = util.format('mongodb://%s:%s@%s:%d/%s',mongouser,mongopass,mongoip,mongoport,mongodb);
 }
 
 var async = require("async");
@@ -155,7 +161,7 @@ server.put('/DVP/API/:version/EngagementSession/:session/Move/:operation/From/:f
 server.post('/DVP/API/:version/EngagementSessionForProfile', authorization({resource:"engagement", action:"write"}), engagementService.AddEngagementSessionForProfile);
 server.get('/DVP/API/:version/EngagementSessionCount/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementCounts);
 
-
+server.post('/DVP/API/:version/UMS/Interact', authorization({resource:"engagement", action:"write"}), engagementService.Interact);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
