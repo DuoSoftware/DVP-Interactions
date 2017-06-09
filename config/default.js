@@ -47,20 +47,14 @@ module.exports = {
 
   "Mongo":
   {
-<<<<<<< HEAD
-      "ip":"104.236.231.11",
-      "port":"27017",
-      "dbname":"dvpdb",
-      "password":"DuoS123",
-      "user":"duo"
-=======
+
     "ip":"104.236.231.11",
     "port":"27017",
     "dbname":"dvpdb",
     "password":"DuoS123",
     "user":"duo",
     "replicaset" :"104.236.231.11"
->>>>>>> dialog_implementation
+
   },
 
   "RabbitMQ":

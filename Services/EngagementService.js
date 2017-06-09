@@ -11,10 +11,13 @@ var EngagementNote = require('dvp-mongomodels/model/Engagement').EngagementNote;
 var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
 var ExternalUser = require('dvp-mongomodels/model/ExternalUser');
 var amqp = require('amqp');
+var config = require('config');
+var util = require('util');
+
 
 
 ////////////////////////////rabbitmq//////////////////////////////////////////////////////
-var queueHost = format('amqp://{0}:{1}@{2}:{3}', config.RabbitMQ.user, config.RabbitMQ.password, config.RabbitMQ.ip, config.RabbitMQ.port);
+var queueHost = util.format('amqp://%s:%s@%s:%d', config.RabbitMQ.user, config.RabbitMQ.password, config.RabbitMQ.ip, config.RabbitMQ.port);
 var queueConnection = amqp.createConnection({
     url: queueHost
 });
@@ -1104,7 +1107,7 @@ function Interact(req, res) {
             update_comment: true,
             company: company,
             tenant: tenant,
-            Parameters: req.body.Parameters,
+            Parameters: req.body.parameters,
             template: req.body.template,
             author: req.user.iss
         };
