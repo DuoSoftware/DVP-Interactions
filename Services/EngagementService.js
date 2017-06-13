@@ -988,8 +988,6 @@ function AddIsolatedEngagementSession(req, res) {
             jsonString = messageFormatter.FormatMessage(err, "Engagement Session save failed", false, undefined);
             res.end(jsonString);
         } else {
-
-
             if (engagementSession) {
 
                 Engagement.findOneAndUpdate({company: company, tenant: tenant, profile: req.params.profile}, {
