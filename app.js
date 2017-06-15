@@ -161,7 +161,7 @@ server.put('/DVP/API/:version/EngagementSession/:session/Move/:operation/From/:f
 server.post('/DVP/API/:version/EngagementSessionForProfile', authorization({resource:"engagement", action:"write"}), engagementService.AddEngagementSessionForProfile);
 server.get('/DVP/API/:version/EngagementSessionCount/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementCounts);
 
-
+server.post('/DVP/API/:version/UMS/Interact', authorization({resource:"engagement", action:"write"}), engagementService.Interact);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
