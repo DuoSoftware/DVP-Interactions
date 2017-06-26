@@ -53,6 +53,16 @@ module.exports = {
         "port": "LB_PORT"
 
     },
+
+    "RabbitMQ":
+    {
+        "ip": "SYS_RABBITMQ_HOST",
+        "port": "SYS_RABBITMQ_PORT",
+        "user": "SYS_RABBITMQ_USER",
+        "password": "SYS_RABBITMQ_PASSWORD"
+    },
+
+
     "Services" : {
         "accessToken": "HOST_TOKEN",
         "resourceServiceHost": "SYS_RESOURCESERVICE_HOST",
