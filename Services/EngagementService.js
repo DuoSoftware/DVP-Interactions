@@ -324,7 +324,7 @@ function AddEngagementSession(req, res) {
             res.end(jsonString);
         } else {
 
-            if(req.body.channel != 'API') {
+            if(req.body.channel != 'api') {
                 Engagement.findOneAndUpdate({
                     company: company,
                     tenant: tenant,
@@ -758,7 +758,7 @@ function AddEngagementSessionForProfile(req, res) {
                     res.end(jsonString);
                 } else {
 
-                    if(req.body.channel != 'API') {
+                    if(req.body.channel != 'api') {
 
 
                         Engagement.findOneAndUpdate({
