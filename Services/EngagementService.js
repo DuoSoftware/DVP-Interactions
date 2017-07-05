@@ -380,6 +380,12 @@ function AddEngagementSession(req, res) {
                  res.end(jsonString);
                  });
                  */
+            }else {
+
+
+                jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
+
+                res.end(jsonString);
             }
 
         }
@@ -805,6 +811,12 @@ function AddEngagementSessionForProfile(req, res) {
                             res.end(jsonString);
 
                         });
+                    }else {
+
+
+                        jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
+
+                        res.end(jsonString);
                     }
 
                 }
