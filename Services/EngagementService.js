@@ -324,61 +324,69 @@ function AddEngagementSession(req, res) {
             res.end(jsonString);
         } else {
 
-            Engagement.findOneAndUpdate({
-                company: company,
-                tenant: tenant,
-                profile: req.params.id
-            }, {
-
-                $push: {
-                    engagements: {
-                        $each: [engagementSession._id],
-                        $position: 0
-                    }
-                },
-                $setOnInsert: {
-
-                    profile: req.params.id,
-                    created_at: Date.now(),
+            if(req.body.channel != 'api') {
+                Engagement.findOneAndUpdate({
                     company: company,
-                    tenant: tenant
-                },
-                $set:{
+                    tenant: tenant,
+                    profile: req.params.id
+                }, {
 
-                    updated_at: Date.now(),
-                }
+                    $push: {
+                        engagements: {
+                            $each: [engagementSession._id],
+                            $position: 0
+                        }
+                    },
+                    $setOnInsert: {
 
-            },{upsert:true, new: true}, function (err, session) {
-                if (err) {
-                    jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+                        profile: req.params.id,
+                        created_at: Date.now(),
+                        company: company,
+                        tenant: tenant
+                    },
+                    $set: {
 
-                } else {
-                    //engage.profile_id = users[0].id;
-                    jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
-                }
+                        updated_at: Date.now(),
+                    }
+
+                }, {upsert: true, new: true}, function (err, session) {
+                    if (err) {
+                        jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+
+                    } else {
+                        //engage.profile_id = users[0].id;
+                        jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
+                    }
+
+                    res.end(jsonString);
+
+                });
+                /*
+                 Engagement.findOneAndUpdate({company: company, tenant: tenant, _id: req.params.id}, {
+                 $addToSet: {
+                 engagements: engagementSession._id
+                 }
+                 }, function (err, session) {
+                 if (err) {
+
+                 jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+
+                 } else {
+
+                 jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, session);
+
+                 }
+
+                 res.end(jsonString);
+                 });
+                 */
+            }else {
+
+
+                jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
 
                 res.end(jsonString);
-
-            });
-            /*
-            Engagement.findOneAndUpdate({company: company, tenant: tenant, _id: req.params.id}, {
-                $addToSet: {
-                    engagements: engagementSession._id
-                }
-            }, function (err, session) {
-                if (err) {
-
-                    jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
-
-                } else {
-
-                    jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, session);
-
-                }
-
-                res.end(jsonString);
-            });
-            */
+            }
 
         }
     });
@@ -756,51 +764,60 @@ function AddEngagementSessionForProfile(req, res) {
                     res.end(jsonString);
                 } else {
 
-                    Engagement.findOneAndUpdate({
-                        company: company,
-                        tenant: tenant,
-                        profile: users[0].id
-                    }, {
+                    if(req.body.channel != 'api') {
 
 
-                        $push: {
-                            engagements: {
-                                $each: [engagementSession._id],
-                                $position: 0
-                            }
-                        },
-
-
-
-                        $setOnInsert: {
-                            //updated_at: Date.now(),
-                            profile: users[0].id,
-                            created_at: Date.now(),
+                        Engagement.findOneAndUpdate({
                             company: company,
-                            tenant: tenant
-                        },
-                        $set: {
+                            tenant: tenant,
+                            profile: users[0].id
+                        }, {
 
 
-                            updated_at: Date.now()
-                        }
+                            $push: {
+                                engagements: {
+                                    $each: [engagementSession._id],
+                                    $position: 0
+                                }
+                            },
 
-                    }, {upsert: true, new: true}, function (err, session) {
-                        if (err) {
 
-                            jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+                            $setOnInsert: {
+                                //updated_at: Date.now(),
+                                profile: users[0].id,
+                                created_at: Date.now(),
+                                company: company,
+                                tenant: tenant
+                            },
+                            $set: {
 
-                        } else {
 
-                            engage.profile_id = users[0].id;
+                                updated_at: Date.now()
+                            }
 
-                            jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
+                        }, {upsert: true, new: true}, function (err, session) {
+                            if (err) {
 
-                        }
+                                jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+
+                            } else {
+
+                                engage.profile_id = users[0].id;
+
+                                jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
+
+                            }
+
+                            res.end(jsonString);
+
+                        });
+                    }else {
+
+
+                        jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
 
                         res.end(jsonString);
-
-                    });
+                    }
 
                 }
             });
@@ -990,38 +1007,48 @@ function AddIsolatedEngagementSession(req, res) {
         } else {
             if (engagementSession) {
 
-                Engagement.findOneAndUpdate({company: company, tenant: tenant, profile: req.params.profile}, {
-                    $push: {
-                        engagements: {
-                            $each: [engagementSession._id],
-                            $position: 0
+
+                if(engagementSession.channel != 'api') {
+
+
+                    Engagement.findOneAndUpdate({company: company, tenant: tenant, profile: req.params.profile}, {
+                        $push: {
+                            engagements: {
+                                $each: [engagementSession._id],
+                                $position: 0
+                            }
+                        },
+                        $set: {
+
+                            profile: req.params.profile,
+                            updated_at: Date.now()
+                        },
+                        $setOnInsert: {
+                            //updated_at: Date.now(),
+                            created_at: Date.now(),
+                            company: company,
+                            tenant: tenant
                         }
-                    },
-                    $set: {
 
-                        profile: req.params.profile,
-                        updated_at: Date.now()
-                    },
-                    $setOnInsert: {
-                        //updated_at: Date.now(),
-                        created_at: Date.now(),
-                        company: company,
-                        tenant: tenant
-                    }
+                    }, {upsert: true}, function (err, session) {
+                        if (err) {
 
-                }, {upsert: true}, function (err, session) {
-                    if (err) {
+                            jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
 
-                        jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+                        } else {
 
-                    } else {
+                            jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, session);
 
-                        jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, session);
+                        }
 
-                    }
-
+                        res.end(jsonString);
+                    });
+                }else{
+                    jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, undefined);
                     res.end(jsonString);
-                });
+
+
+                }
             } else {
 
                 jsonString = messageFormatter.FormatMessage(undefined, "Engagement Session save failed", false, undefined);
