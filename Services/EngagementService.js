@@ -660,57 +660,62 @@ function AddEngagementSessionForProfile(req, res) {
 
  var orArray = [];
 
+    var otherQuery;
+    var queryObject;
+
     if(category == 'call' || category == 'sms' ){
 
-        var otherQuery = {company: company, tenant: tenant, "contacts.type": "phone", "contacts.contact": contact};
-        orArray.push(otherQuery);
+        otherQuery = {company: company, tenant: tenant, "contacts.type": "phone", "contacts.contact": contact};
 
-        var queryObject = {company: company, tenant: tenant};
-        queryObject["phone"] = contact;
-
-        orArray.push(queryObject);
 
         queryObject = {company: company, tenant: tenant};
         queryObject["landnumber"] = contact;
 
         orArray.push(queryObject);
 
+
+        queryObject = {company: company, tenant: tenant};
+        queryObject["phone"] = contact;
+
+        orArray.push(queryObject);
+
+
+
     } else if(category == 'facebook-post' || category == 'facebook-chat'){
 
-        var otherQuery = {company: company, tenant: tenant, "contacts.type": "facebook", "contacts.contact": contact};
-        orArray.push(otherQuery);
+        otherQuery = {company: company, tenant: tenant, "contacts.type": "facebook", "contacts.contact": contact};
 
-        var queryObject = {company: company, tenant: tenant};
+        queryObject = {company: company, tenant: tenant};
         queryObject["facebook"] = contact;
 
         orArray.push(queryObject);
 
     }else if(category == 'chat'){
 
-        var otherQuery = {company: company, tenant: tenant, "contacts.type": "email", "contacts.contact": contact};
-        orArray.push(otherQuery);
+        otherQuery = {company: company, tenant: tenant, "contacts.type": "email", "contacts.contact": contact};
 
-        var queryObject = {company: company, tenant: tenant};
+
+        queryObject = {company: company, tenant: tenant};
         queryObject["email"] = contact;
 
         orArray.push(queryObject);
 
     }else if(category == 'skype'){
 
-        var otherQuery = {company: company, tenant: tenant, "contacts.type": "skype", "contacts.contact": contact};
-        orArray.push(otherQuery);
+        otherQuery = {company: company, tenant: tenant, "contacts.type": "skype", "contacts.contact": contact};
 
-        var queryObject = {company: company, tenant: tenant};
+
+        queryObject = {company: company, tenant: tenant};
         queryObject["skype"] = contact;
 
         orArray.push(queryObject);
 
     }else{
 
-        var otherQuery = {company: company, tenant: tenant, "contacts.type": category, "contacts.contact": contact};
-        orArray.push(otherQuery);
+        otherQuery = {company: company, tenant: tenant, "contacts.type": category, "contacts.contact": contact};
 
-        var queryObject = {company: company, tenant: tenant};
+
+        queryObject = {company: company, tenant: tenant};
         queryObject[category] = contact;
 
         orArray.push(queryObject);
@@ -718,6 +723,24 @@ function AddEngagementSessionForProfile(req, res) {
 
 
     var orQuery = {$or: orArray};
+
+    if(config.Host.profilesearch == "primary"){
+
+        orQuery = queryObject;
+
+    }else if(config.Host.profilesearch == "secondary"){
+
+        orArray.push(otherQuery);
+        orQuery = {$or: orArray};
+
+    }else if(config.Host.profilesearch == "secondaryonly"){
+
+        orQuery = otherQuery;
+
+    }else{
+
+        logger.info("Selected default method, which may take longer .........");
+    }
 
 
     logger.info(orQuery);
