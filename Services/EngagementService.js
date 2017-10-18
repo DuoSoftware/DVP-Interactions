@@ -739,6 +739,8 @@ function AddEngagementSessionForProfile(req, res) {
 
     }else{
 
+        orArray.push(otherQuery);
+        orQuery = {$or: orArray};
         logger.info("Selected default method, which may take longer .........");
     }
 
