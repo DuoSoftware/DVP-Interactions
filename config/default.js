@@ -43,6 +43,7 @@ module.exports = {
 
   "Host":
   {
+    "profilesearch":"secondaryonly",
     "resource": "cluster",
     "vdomain": "localhost",
     "domain": "localhost",
