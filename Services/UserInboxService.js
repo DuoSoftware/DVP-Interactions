@@ -5,10 +5,11 @@
 var mongoose = require('mongoose');
 var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
 var InboxMessage = require('dvp-mongomodels/model/UserInbox').InboxMessage;
-var User = require('dvp-mongomodels/model/User');
+//var User = require('dvp-mongomodels/model/User');
 var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
 var uuid = require('node-uuid');
 var async = require('async');
+var UserAccount = require('dvp-mongomodels/model/UserAccount');
 
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
@@ -30,14 +31,14 @@ function AddMessageToInbox(req, res, next)
             throw new Error("Invalid company or tenant");
         }
 
-        var query = {company: companyId, tenant: tenantId, _id: profileId};
+        var query = {company: companyId, tenant: tenantId, userref: profileId};
 
         if(issuer)
         {
-            query = {company: companyId, tenant: tenantId, username: issuer}
+            query = {company: companyId, tenant: tenantId, user: issuer}
         }
 
-        User.findOne(query, function(err, user)
+        UserAccount.findOne(query).populate('userref', '-password').exec(function(err, user)
         {
             if(user)
             {
@@ -45,7 +46,7 @@ function AddMessageToInbox(req, res, next)
                 var inboxMsg = InboxMessage({
 
                     engagement_session: req.body.engagementSession,
-                    profile: user._id,
+                    profile: user.userref._id,
                     message: req.body.message,
                     from: req.body.from,
                     has_read: false,
