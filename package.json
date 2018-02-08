@@ -7,7 +7,7 @@
     "amqp": "^0.2.6",
     "async": "^2.0.1",
     "config": "^1.21.0",
-    "dvp-common": "^0.8.4",
+    "dvp-common": "1.1.0",
     "dvp-mongomodels": "^4.8.38",
     "mongoose": "^4.5.3",
     "mongoose-unique-validator": "^1.0.2",
