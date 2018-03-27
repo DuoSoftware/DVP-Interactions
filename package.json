@@ -12,7 +12,7 @@
     "mongoose": "^4.5.3",
     "mongoose-unique-validator": "^1.0.2",
     "node-uuid": "^1.4.3",
-    "restify": "^4.1.1",
+    "restify": "^4.0.3",
     "restify-jwt": "^0.4.0"
   },
   "devDependencies": {},
