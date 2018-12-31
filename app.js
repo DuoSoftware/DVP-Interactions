@@ -2,11 +2,12 @@ var restify = require('restify');
 var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
 var config = require('config');
 var jwt = require('restify-jwt');
-var mongoose = require('mongoose');
 var secret = require('dvp-common/Authentication/Secret.js');
 var authorization = require('dvp-common/Authentication/Authorization.js');
 var inboxService = require('./Services/UserInboxService.js');
 var engagementService = require('./Services/EngagementService');
+var mongomodels = require('dvp-mongomodels');
+var healthcheck = require('dvp-healthcheck/DBHealthChecker');
 
 
 
@@ -63,7 +64,7 @@ server.use(jwt({secret: secret.Secret}));
 //
 //mongoose.connect(connectionstring);
 
-
+/*
 var util = require('util');
 var mongoip=config.Mongo.ip;
 var mongoport=config.Mongo.port;
@@ -138,6 +139,10 @@ process.on('SIGINT', function() {
     });
 });
 
+*/
+///////////////////////////////HealthCheck///////////////////////////////////////////////////////////////////////////////////////////
+var hc = new healthcheck(server, {mongo: mongomodels.connection});
+hc.Initiate();
 ///////////////////////////////Engagement////////////////////////////////////////////////////////////////////////////////////////////
 
 server.get('/DVP/API/:version/Engagements', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagements);
