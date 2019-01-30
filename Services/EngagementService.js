@@ -704,7 +704,7 @@ function AddEngagementSessionForProfile(req, res) {
 
 
 
-    } else if(category == 'facebook-post' || category == 'facebook-chat'){
+    } else if(category == 'facebook-post' || category == 'facebook-chat' || category == 'facebook-comment'){
 
         otherQuery = {company: company, tenant: tenant, "contacts.type": "facebook", "contacts.contact": contact};
 
