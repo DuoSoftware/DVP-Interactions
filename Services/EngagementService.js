@@ -3,7 +3,7 @@
  */
 
 
-var mongoose = require('mongoose');
+//var mongoose = require('mongoose');
 var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
 var Engagement = require('dvp-mongomodels/model/Engagement').Engagement;
 var EngagementSession = require('dvp-mongomodels/model/Engagement').EngagementSession;
@@ -17,33 +17,10 @@ var util = require('util');
 
 
 ////////////////////////////rabbitmq//////////////////////////////////////////////////////
-// var queueHost = util.format('amqp://%s:%s@%s:%d', config.RabbitMQ.user, config.RabbitMQ.password, config.RabbitMQ.ip, config.RabbitMQ.port);
-// var queueConnection = amqp.createConnection({
-//     url: queueHost
-// });
-
-var ips = [];
-if(config.RabbitMQ.ip) {
-    ips = config.RabbitMQ.ip.split(",");
-}
-
-
+var queueHost = util.format('amqp://%s:%s@%s:%d', config.RabbitMQ.user, config.RabbitMQ.password, config.RabbitMQ.ip, config.RabbitMQ.port);
 var queueConnection = amqp.createConnection({
-    //url: queueHost,
-    host: ips,
-    port: config.RabbitMQ.port,
-    login: config.RabbitMQ.user,
-    password: config.RabbitMQ.password,
-    vhost: config.RabbitMQ.vhost,
-    noDelay: true,
-    heartbeat:10
-}, {
-    reconnect: true,
-    reconnectBackoffStrategy: 'linear',
-    reconnectExponentialLimit: 120000,
-    reconnectBackoffTime: 1000
+    url: queueHost
 });
-
 queueConnection.on('ready', function () {
 
     logger.info("Confection with the queue is OK");
@@ -60,8 +37,8 @@ queueConnection.on('error', function (error) {
 
 
 
-var Schema = mongoose.Schema;
-var ObjectId = Schema.ObjectId;
+//var Schema = mongoose.Schema;
+//var ObjectId = Schema.ObjectId;
 
 
 
@@ -704,7 +681,7 @@ function AddEngagementSessionForProfile(req, res) {
 
 
 
-    } else if(category == 'facebook-post' || category == 'facebook-chat' || category == 'facebook-comment'){
+    } else if(category == 'facebook-post' || category == 'facebook-chat'){
 
         otherQuery = {company: company, tenant: tenant, "contacts.type": "facebook", "contacts.contact": contact};
 
@@ -771,7 +748,7 @@ function AddEngagementSessionForProfile(req, res) {
     logger.info(orQuery);
 
 
-    ExternalUser.find(orQuery, function (err, users) {
+    ExternalUser.find(orQuery).limit(5).exec(function (err, users) {
 
         ////////////////////////////////////External users found/////////////////////////////////////////////
         if (!err && users && users.length == 1) {

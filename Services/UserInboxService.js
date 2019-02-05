@@ -2,7 +2,7 @@
  * Created by dinusha on 7/15/2016.
  */
 
-var mongoose = require('mongoose');
+//var mongoose = require('mongoose');
 var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
 var InboxMessage = require('dvp-mongomodels/model/UserInbox').InboxMessage;
 //var User = require('dvp-mongomodels/model/User');
@@ -11,8 +11,8 @@ var uuid = require('node-uuid');
 var async = require('async');
 var UserAccount = require('dvp-mongomodels/model/UserAccount');
 
-var Schema = mongoose.Schema;
-var ObjectId = Schema.ObjectId;
+//var Schema = mongoose.Schema;
+//var ObjectId = Schema.ObjectId;
 
 function AddMessageToInbox(req, res, next)
 {
