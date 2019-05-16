@@ -312,6 +312,7 @@ function AddEngagementSession(req, res) {
         direction: req.body.direction,
         company: company,
         has_profile: true,
+        profile_id: req.params.id,
         tenant: tenant,
         created_at: Date.now(),
         updated_at: Date.now()
@@ -770,6 +771,7 @@ function AddEngagementSessionForProfile(req, res) {
                 company: company,
                 tenant: tenant,
                 has_profile: true,
+                profile_id: users[0].id,
                 created_at: Date.now(),
                 updated_at: Date.now()
 
@@ -1024,7 +1026,8 @@ function AddIsolatedEngagementSession(req, res) {
     var jsonString;
 
     EngagementSession.findOneAndUpdate({engagement_id: req.params.session, company: company, tenant: tenant, has_profile: false}, {
-        has_profile: true
+        has_profile: true,
+        profile_id: req.params.profile
     },function (err, engagementSession) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Engagement Session save failed", false, undefined);
