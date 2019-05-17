@@ -479,6 +479,151 @@ function GetEngagementSessions(req, res){
     });
 
 };
+function GetUserEngagementSessions(req, res) {
+
+
+    logger.debug("DVP-Interactions.GetEngagementSessions Internal method ");
+
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+
+    var userProfile = req.params.id;
+    var limitCount = parseInt(req.query.limit);
+    var skipCount = parseInt(req.query.skip);
+    var sort = 'descending';
+
+    var query = {
+        profile_id: userProfile,
+        company: company,
+        tenant: tenant
+    }
+
+    if (req.query.channel) {
+        if (Array.isArray(req.query.channel)) {
+            query.channel = {$in: req.query.channel.map(function(item){return item.toLowerCase()})}
+        } else {
+            query.channel = req.query.channel;
+        }
+    }else{
+        query.channel = {$ne: 'api'}
+    }
+
+    if (req.query.direction) {
+        query.direction = req.query.direction;
+    }
+
+    if (req.query.from) {
+        query.channel_from = req.query.from;
+    }
+
+    if (req.query.to) {
+        query.channel_to = req.query.to;
+    }
+
+    if (req.query.startDate && req.query.endDate) {
+        query.created_at = {
+            $gte: new Date(req.query.startDate),
+            $lte: new Date(req.query.endDate)
+        };
+    }
+
+    if (req.query.sort) {
+        sort = req.query.sort;
+    }
+
+    EngagementSession.find(query)
+        .sort({created_at: sort})
+        .skip(skipCount)
+        .limit(limitCount)
+        .exec(function (err, engagements) {
+            if (err) {
+
+                jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Failed", false, undefined);
+
+            } else {
+
+                if (engagements) {
+
+                    jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Successful", true, engagements);
+
+                } else {
+
+                    jsonString = messageFormatter.FormatMessage(undefined, "No EngagementSessions Found", false, undefined);
+
+                }
+            }
+
+            res.end(jsonString);
+        });
+
+};
+function GetUserEngagementSessionsCount(req, res){
+
+
+    logger.debug("DVP-Interactions.GetEngagementSessions Internal method ");
+
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+    var userProfile = req.params.id;
+
+    var query = {
+        profile_id: userProfile,
+        company: company,
+        tenant: tenant
+    }
+
+    if(req.query.channel){
+        if(Array.isArray(req.query.channel)){
+            query.channel = {$in:req.query.channel}
+        }else{
+            query.channel =  req.query.channel;
+        }
+    }
+
+    if(req.query.direction){
+        query.direction =  req.query.direction;
+    }
+
+    if(req.query.from){
+        query.channel_from =  req.query.from;
+    }
+
+    if(req.query.to){
+        query.channel_to =  req.query.to;
+    }
+
+    if(req.query.startDate && req.query.endDate){
+        query.created_at =  {
+            $gte: new Date(req.query.startDate),
+            $lte:  new Date(req.query.endDate)
+        };
+    }
+
+
+    EngagementSession.find(query).count( function(err, engagement) {
+            if (err) {
+
+                jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Failed", false, undefined);
+
+            }else {
+
+                if (engagement) {
+
+                    jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Successful", true, engagement);
+
+                }else{
+
+                    jsonString = messageFormatter.FormatMessage(undefined, "No EngagementSessions Found", false, undefined);
+
+                }
+            }
+
+            res.end(jsonString);
+        });
+
+};
 function getEngagementSessionNote(req, res){
 
 
@@ -1230,4 +1375,5 @@ module.exports.MoveEngagementBetweenProfiles = MoveEngagementBetweenProfiles;
 module.exports.GetIsolatedEngagenetSessions = GetIsolatedEngagementSessions;
 module.exports.AddIsolatedEngagementSession = AddIsolatedEngagementSession;
 module.exports.GetEngagementCounts= GetEngagementCounts;
-
+module.exports.GetUserEngagementSessions = GetUserEngagementSessions;
+module.exports.GetUserEngagementSessionsCount = GetUserEngagementSessionsCount;
