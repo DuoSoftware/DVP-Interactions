@@ -431,7 +431,7 @@ function DeleteEngagementSession(req, res){
 
 
 };
-function GetEngagementSessions(req, res){
+function GetEngagementSessions_back(req, res){
 
 
     logger.debug("DVP-Interactions.GetEngagementSessions Internal method ");
@@ -1353,8 +1353,6 @@ function Interact(req, res) {
     }
 
 };
-
-
 function GetEngagementSessions(req, res) {
 
 
@@ -1496,6 +1494,41 @@ function GetEngagementSessionsCount(req, res){
     });
 
 };
+function GetEngagementSession(req, res){
+
+
+    logger.debug("DVP-Interactions.GetEngagementSessions Internal method ");
+
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+
+    var session = req.params.session;
+
+
+    EngagementSession.findOne({engagement_id:  session,company: company, tenant: tenant}, function(err, engagement) {
+        if (err) {
+
+            jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Failed", false, undefined);
+
+        }else {
+
+            if (engagement) {
+
+                jsonString = messageFormatter.FormatMessage(err, "Get EngagementSession Successful", true, engagement);
+
+            }else{
+
+                jsonString = messageFormatter.FormatMessage(undefined, "No EngagementSession Found", false, undefined);
+
+            }
+        }
+
+        res.end(jsonString);
+    });
+
+};
+
 
 
 module.exports.Interact = Interact;
@@ -1509,6 +1542,7 @@ module.exports.DeleteEngagement = DeleteEngagement;
 module.exports.AddEngagementSession = AddEngagementSession;
 module.exports.DeleteEngagementSession = DeleteEngagementSession;
 module.exports.GetEngagementSessions = GetEngagementSessions;
+module.exports.GetEngagementSession = GetEngagementSession;
 module.exports.GetEngagementSessionNote = getEngagementSessionNote;
 module.exports.AppendNoteToEngagementSession = AppendNoteToEngagementSession;
 module.exports.RemoveNoteFromEngagementSession = RemoveNoteFromEngagementSession;

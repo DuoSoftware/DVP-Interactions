@@ -165,6 +165,7 @@ server.get('/DVP/API/:version/EngagementSessions/Count', authorization({resource
 server.del('/DVP/API/:version/Engagement/:id/EngagementSession/:session', authorization({resource:"engagement", action:"delete"}), engagementService.DeleteEngagementSession);
 server.post('/DVP/API/:version/EngagementSession/:session/Note', authorization({resource:"engagement", action:"write"}), engagementService.AppendNoteToEngagementSession);
 server.get('/DVP/API/:version/EngagementSession/:session/Note', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementSessionNote);
+server.get('/DVP/API/:version/EngagementSession/:session', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementSession);
 server.del('/DVP/API/:version/EngagementSession/:session/Note/:noteid', authorization({resource:"engagement", action:"delete"}), engagementService.RemoveNoteFromEngagementSession);
 server.put('/DVP/API/:version/EngagementSession/:session/Note/:noteid', authorization({resource:"engagement", action:"write"}), engagementService.UpdateNoteInEngagementSession);
 server.put('/DVP/API/:version/EngagementSession/:session/Move/:operation/From/:from/To/:to', authorization({resource:"engagement", action:"write"}), engagementService.MoveEngagementBetweenProfiles);
