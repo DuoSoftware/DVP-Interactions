@@ -521,10 +521,10 @@ function GetUserEngagementSessions(req, res) {
         query.channel_to = req.query.to;
     }
 
-    if (req.query.startDate && req.query.endDate) {
+    if (req.query.startdate && req.query.enddate) {
         query.created_at = {
-            $gte: new Date(req.query.startDate),
-            $lte: new Date(req.query.endDate)
+            $gte: new Date(req.query.startdate),
+            $lte: new Date(req.query.enddate)
         };
     }
 
@@ -594,10 +594,10 @@ function GetUserEngagementSessionsCount(req, res){
         query.channel_to =  req.query.to;
     }
 
-    if(req.query.startDate && req.query.endDate){
+    if(req.query.startdate && req.query.enddate){
         query.created_at =  {
-            $gte: new Date(req.query.startDate),
-            $lte:  new Date(req.query.endDate)
+            $gte: new Date(req.query.startdate),
+            $lte:  new Date(req.query.enddate)
         };
     }
 
