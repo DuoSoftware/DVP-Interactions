@@ -1556,3 +1556,4 @@ module.exports.GetUserEngagementSessions = GetUserEngagementSessions;
 module.exports.GetUserEngagementSessionsCount = GetUserEngagementSessionsCount;
 module.exports.GetEngagementSessions = GetEngagementSessions;
 module.exports.GetEngagementSessionsCount = GetEngagementSessionsCount;
+module.exports.GetEngagementSessions_back = GetEngagementSessions_back;
