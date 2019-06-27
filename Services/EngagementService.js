@@ -16,11 +16,38 @@ var util = require('util');
 
 
 
-////////////////////////////rabbitmq//////////////////////////////////////////////////////
-var queueHost = util.format('amqp://%s:%s@%s:%d', config.RabbitMQ.user, config.RabbitMQ.password, config.RabbitMQ.ip, config.RabbitMQ.port);
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+var ips = [];
+if(config.RabbitMQ.ip) {
+    ips = config.RabbitMQ.ip.split(",");
+}
+
+
 var queueConnection = amqp.createConnection({
-    url: queueHost
+    //url: queueHost,
+    host: ips,
+    port: config.RabbitMQ.port,
+    login: config.RabbitMQ.user,
+    password: config.RabbitMQ.password,
+    vhost: config.RabbitMQ.vhost,
+    noDelay: true,
+    heartbeat:10
+}, {
+    reconnect: true,
+    reconnectBackoffStrategy: 'linear',
+    reconnectExponentialLimit: 120000,
+    reconnectBackoffTime: 1000
 });
+
+////////////////////////////rabbitmq//////////////////////////////////////////////////////
+// var queueHost = util.format('amqp://%s:%s@%s:%d', config.RabbitMQ.user, config.RabbitMQ.password, config.RabbitMQ.ip, config.RabbitMQ.port);
+// var queueConnection = amqp.createConnection({
+//     url: queueHost
+// });
+
+/////////////////////////////////////////////////////////////////////////////////////
 queueConnection.on('ready', function () {
 
     logger.info("Confection with the queue is OK");
