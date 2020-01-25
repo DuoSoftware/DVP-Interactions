@@ -654,7 +654,7 @@ function GetUserEngagementSessionsCount(req, res){
 function getEngagementSessionNote(req, res){
 
 
-    logger.debug("DVP-LiteTicket.getEngagementSessionNote Internal method ");
+    logger.debug("DVP-Interactions.getEngagementSessionNote Internal method ");
 
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
@@ -680,7 +680,7 @@ function getEngagementSessionNote(req, res){
 function AppendNoteToEngagementSession(req, res){
 
 
-    logger.debug("DVP-LiteTicket.AppendNoteToEngagementSession Internal method ");
+    logger.debug("DVP-Interactions.AppendNoteToEngagementSession Internal method ");
 
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
@@ -712,7 +712,7 @@ function AppendNoteToEngagementSession(req, res){
 function RemoveNoteFromEngagementSession(req, res){
 
 
-    logger.debug("DVP-LiteTicket.RemoveNoteFromEngagementSession Internal method ");
+    logger.debug("DVP-Interactions.RemoveNoteFromEngagementSession Internal method ");
 
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
@@ -742,7 +742,7 @@ function RemoveNoteFromEngagementSession(req, res){
 function UpdateNoteInEngagementSession(req, res){
 
 
-    logger.debug("DVP-LiteTicket.UpdateNoteInEngagementSession Internal method ");
+    logger.debug("DVP-Interactions.UpdateNoteInEngagementSession Internal method ");
 
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
@@ -1064,7 +1064,7 @@ function AddEngagementSessionForProfile(req, res) {
 function MoveEngagementBetweenProfiles(req, res){
 
 
-    logger.debug("DVP-LiteTicket.MoveEngagementBetweenProfiles Internal method ");
+    logger.debug("DVP-Interactions.MoveEngagementBetweenProfiles Internal method ");
 
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
@@ -1164,7 +1164,7 @@ function MoveEngagementBetweenProfiles(req, res){
 };
 function GetIsolatedEngagementSessions(req, res) {
 
-    logger.debug("DVP-LiteTicket.GetEngagementSessionsWhichHasNoProfile Internal method ");
+    logger.debug("DVP-Interactions.GetEngagementSessionsWhichHasNoProfile Internal method ");
 
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);

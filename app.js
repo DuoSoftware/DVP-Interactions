@@ -1,38 +1,32 @@
-var restify = require('restify');
-var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
-var config = require('config');
-var jwt = require('restify-jwt');
-var secret = require('dvp-common/Authentication/Secret.js');
-var authorization = require('dvp-common/Authentication/Authorization.js');
-var inboxService = require('./Services/UserInboxService.js');
-var engagementService = require('./Services/EngagementService');
-var mongomodels = require('dvp-mongomodels');
-var healthcheck = require('dvp-healthcheck/DBHealthChecker');
+var restify = require("restify");
+var logger = require("dvp-common/LogHandler/CommonLogHandler.js").logger;
+var config = require("config");
+var jwt = require("restify-jwt");
+var secret = require("dvp-common/Authentication/Secret.js");
+var authorization = require("dvp-common/Authentication/Authorization.js");
+var inboxService = require("./Services/UserInboxService.js");
+var engagementService = require("./Services/EngagementService");
+var mongomodels = require("dvp-mongomodels");
+var healthcheck = require("dvp-healthcheck/DBHealthChecker");
 
-
-
-var util = require('util');
+var util = require("util");
 var port = config.Host.port || 3000;
-var host = config.Host.vdomain || 'localhost';
-
-
-
+var host = config.Host.vdomain || "localhost";
 
 var server = restify.createServer({
-    name: "DVP Engagement Service"
+  name: "DVP Engagement Service"
 });
 
 server.pre(restify.pre.userAgentConnection());
 server.use(restify.queryParser());
 server.use(restify.bodyParser({ mapParams: false }));
 
-restify.CORS.ALLOW_HEADERS.push('authorization');
-restify.CORS.ALLOW_HEADERS.push('companyinfo');
+restify.CORS.ALLOW_HEADERS.push("authorization");
+restify.CORS.ALLOW_HEADERS.push("companyinfo");
 server.use(restify.CORS());
 server.use(restify.fullResponse());
 
-server.use(jwt({secret: secret.Secret}));
-
+server.use(jwt({ secret: secret.Secret }));
 
 //var mongoip=config.Mongo.ip;
 //var mongoport=config.Mongo.port;
@@ -141,63 +135,194 @@ process.on('SIGINT', function() {
 
 */
 ///////////////////////////////HealthCheck///////////////////////////////////////////////////////////////////////////////////////////
-var hc = new healthcheck(server, {mongo: mongomodels.connection});
+var hc = new healthcheck(server, { mongo: mongomodels.connection });
 hc.Initiate();
 ///////////////////////////////Engagement////////////////////////////////////////////////////////////////////////////////////////////
 
-server.get('/DVP/API/:version/Engagements', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagements);
-server.get('/DVP/API/:version/Engagement/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagement);
-server.get('/DVP/API/:version/Engagements/:ids', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagements);
-server.get('/DVP/API/:version/EngagementsWithData', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementsWithData);
-server.get('/DVP/API/:version/EngagementWithData/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementWithData);
-server.get('/DVP/API/:version/IsolatedEngagementSessions', authorization({resource:"engagement", action:"read"}), engagementService.GetIsolatedEngagenetSessions);
-server.get('/DVP/API/:version/EngagementByProfile/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementByProfile);
-server.del('/DVP/API/:version/Engagement/:id', authorization({resource:"engagement", action:"delete"}), engagementService.DeleteEngagement);
-server.post('/DVP/API/:version/Engagement', authorization({resource:"engagement", action:"write"}), engagementService.CreateEngagement);
-server.post('/DVP/API/:version/Engagement/:id/EngagementSession', authorization({resource:"engagement", action:"write"}), engagementService.AddEngagementSession);
-server.put('/DVP/API/:version/Engagement/:profile/IsolatedEngagementSession/:session', authorization({resource:"engagement", action:"write"}), engagementService.AddIsolatedEngagementSession);
-server.get('/DVP/API/:version/Engagement/:id/EngagementSessions', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementSessions_back);
-server.get('/DVP/API/:version/ExternalUserProfile/:id/EngagementSessions', authorization({resource:"engagement", action:"read"}), engagementService.GetUserEngagementSessions);
-server.get('/DVP/API/:version/ExternalUserProfile/:id/EngagementSessions/Count', authorization({resource:"engagement", action:"read"}), engagementService.GetUserEngagementSessionsCount);
-server.get('/DVP/API/:version/EngagementSessions', authorization({resource:"engagement", action:"read"}), engagementService.GetUserEngagementSessions);
-server.get('/DVP/API/:version/EngagementSessions/Count', authorization({resource:"engagement", action:"read"}), engagementService.GetUserEngagementSessionsCount);
+server.get(
+  "/DVP/API/:version/Engagements",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetEngagements
+);
+server.get(
+  "/DVP/API/:version/Engagement/:id",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetEngagement
+);
+server.get(
+  "/DVP/API/:version/Engagements/:ids",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetEngagements
+);
+server.get(
+  "/DVP/API/:version/EngagementsWithData",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetEngagementsWithData
+);
+server.get(
+  "/DVP/API/:version/EngagementWithData/:id",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetEngagementWithData
+);
+server.get(
+  "/DVP/API/:version/IsolatedEngagementSessions",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetIsolatedEngagenetSessions
+);
+server.get(
+  "/DVP/API/:version/EngagementByProfile/:id",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetEngagementByProfile
+);
+server.del(
+  "/DVP/API/:version/Engagement/:id",
+  authorization({ resource: "engagement", action: "delete" }),
+  engagementService.DeleteEngagement
+);
+server.post(
+  "/DVP/API/:version/Engagement",
+  authorization({ resource: "engagement", action: "write" }),
+  engagementService.CreateEngagement
+);
+server.post(
+  "/DVP/API/:version/Engagement/:id/EngagementSession",
+  authorization({ resource: "engagement", action: "write" }),
+  engagementService.AddEngagementSession
+);
+server.put(
+  "/DVP/API/:version/Engagement/:profile/IsolatedEngagementSession/:session",
+  authorization({ resource: "engagement", action: "write" }),
+  engagementService.AddIsolatedEngagementSession
+);
+server.get(
+  "/DVP/API/:version/Engagement/:id/EngagementSessions",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetEngagementSessions_back
+);
+server.get(
+  "/DVP/API/:version/ExternalUserProfile/:id/EngagementSessions",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetUserEngagementSessions
+);
+server.get(
+  "/DVP/API/:version/ExternalUserProfile/:id/EngagementSessions/Count",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetUserEngagementSessionsCount
+);
+server.get(
+  "/DVP/API/:version/EngagementSessions",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetUserEngagementSessions
+);
+server.get(
+  "/DVP/API/:version/EngagementSessions/Count",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetUserEngagementSessionsCount
+);
 
-server.del('/DVP/API/:version/Engagement/:id/EngagementSession/:session', authorization({resource:"engagement", action:"delete"}), engagementService.DeleteEngagementSession);
-server.post('/DVP/API/:version/EngagementSession/:session/Note', authorization({resource:"engagement", action:"write"}), engagementService.AppendNoteToEngagementSession);
-server.get('/DVP/API/:version/EngagementSession/:session/Note', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementSessionNote);
-server.get('/DVP/API/:version/EngagementSession/:session', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementSession);
-server.del('/DVP/API/:version/EngagementSession/:session/Note/:noteid', authorization({resource:"engagement", action:"delete"}), engagementService.RemoveNoteFromEngagementSession);
-server.put('/DVP/API/:version/EngagementSession/:session/Note/:noteid', authorization({resource:"engagement", action:"write"}), engagementService.UpdateNoteInEngagementSession);
-server.put('/DVP/API/:version/EngagementSession/:session/Move/:operation/From/:from/To/:to', authorization({resource:"engagement", action:"write"}), engagementService.MoveEngagementBetweenProfiles);
-server.post('/DVP/API/:version/EngagementSessionForProfile', authorization({resource:"engagement", action:"write"}), engagementService.AddEngagementSessionForProfile);
-server.get('/DVP/API/:version/EngagementSessionCount/:id', authorization({resource:"engagement", action:"read"}), engagementService.GetEngagementCounts);
+server.del(
+  "/DVP/API/:version/Engagement/:id/EngagementSession/:session",
+  authorization({ resource: "engagement", action: "delete" }),
+  engagementService.DeleteEngagementSession
+);
+server.post(
+  "/DVP/API/:version/EngagementSession/:session/Note",
+  authorization({ resource: "engagement", action: "write" }),
+  engagementService.AppendNoteToEngagementSession
+);
+server.get(
+  "/DVP/API/:version/EngagementSession/:session/Note",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetEngagementSessionNote
+);
+server.get(
+  "/DVP/API/:version/EngagementSession/:session",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetEngagementSession
+);
+server.del(
+  "/DVP/API/:version/EngagementSession/:session/Note/:noteid",
+  authorization({ resource: "engagement", action: "delete" }),
+  engagementService.RemoveNoteFromEngagementSession
+);
+server.put(
+  "/DVP/API/:version/EngagementSession/:session/Note/:noteid",
+  authorization({ resource: "engagement", action: "write" }),
+  engagementService.UpdateNoteInEngagementSession
+);
+server.put(
+  "/DVP/API/:version/EngagementSession/:session/Move/:operation/From/:from/To/:to",
+  authorization({ resource: "engagement", action: "write" }),
+  engagementService.MoveEngagementBetweenProfiles
+);
+server.post(
+  "/DVP/API/:version/EngagementSessionForProfile",
+  authorization({ resource: "engagement", action: "write" }),
+  engagementService.AddEngagementSessionForProfile
+);
+server.get(
+  "/DVP/API/:version/EngagementSessionCount/:id",
+  authorization({ resource: "engagement", action: "read" }),
+  engagementService.GetEngagementCounts
+);
 
-server.post('/DVP/API/:version/UMS/Interact', authorization({resource:"engagement", action:"write"}), engagementService.Interact);
+server.post(
+  "/DVP/API/:version/UMS/Interact",
+  authorization({ resource: "engagement", action: "write" }),
+  engagementService.Interact
+);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 //////////////////////User Inbox///////////////////////////////////////////////////////////////////////////////////////////////////
 
-server.post('/DVP/API/:version/Inbox/Message', authorization({resource:"inbox", action:"write"}), inboxService.AddMessageToInbox);
-server.put('/DVP/API/:version/Inbox/:profileId/Message/:messageId/Read', authorization({resource:"inbox", action:"write"}), inboxService.SetMessageAsRead);
-server.post('/DVP/API/:version/Inbox/:profileId/RemoveMessages', authorization({resource:"inbox", action:"delete"}), inboxService.DeleteMessages);
-server.get('/DVP/API/:version/Inbox/:profileId/Messages/Unread', authorization({resource:"inbox", action:"read"}), inboxService.GetUnreadMessages);
-server.get('/DVP/API/:version/Inbox/:profileId/Messages/Read', authorization({resource:"inbox", action:"read"}), inboxService.GetReadMessages);
-server.get('/DVP/API/:version/Inbox/:profileId/Messages/All', authorization({resource:"inbox", action:"read"}), inboxService.GetInboxMessages);
-server.get('/DVP/API/:version/Inbox/:profileId/Counts', authorization({resource:"inbox", action:"read"}), inboxService.GetMessageInboxCounts);
-server.get('/DVP/API/:version/Inbox/:profileId/Messages/Deleted', authorization({resource:"inbox", action:"read"}), inboxService.GetDeletedMessages);
+server.post(
+  "/DVP/API/:version/Inbox/Message",
+  authorization({ resource: "inbox", action: "write" }),
+  inboxService.AddMessageToInbox
+);
+server.put(
+  "/DVP/API/:version/Inbox/:profileId/Message/:messageId/Read",
+  authorization({ resource: "inbox", action: "write" }),
+  inboxService.SetMessageAsRead
+);
+server.post(
+  "/DVP/API/:version/Inbox/:profileId/RemoveMessages",
+  authorization({ resource: "inbox", action: "delete" }),
+  inboxService.DeleteMessages
+);
+server.get(
+  "/DVP/API/:version/Inbox/:profileId/Messages/Unread",
+  authorization({ resource: "inbox", action: "read" }),
+  inboxService.GetUnreadMessages
+);
+server.get(
+  "/DVP/API/:version/Inbox/:profileId/Messages/Read",
+  authorization({ resource: "inbox", action: "read" }),
+  inboxService.GetReadMessages
+);
+server.get(
+  "/DVP/API/:version/Inbox/:profileId/Messages/All",
+  authorization({ resource: "inbox", action: "read" }),
+  inboxService.GetInboxMessages
+);
+server.get(
+  "/DVP/API/:version/Inbox/:profileId/Counts",
+  authorization({ resource: "inbox", action: "read" }),
+  inboxService.GetMessageInboxCounts
+);
+server.get(
+  "/DVP/API/:version/Inbox/:profileId/Messages/Deleted",
+  authorization({ resource: "inbox", action: "read" }),
+  inboxService.GetDeletedMessages
+);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-server.listen(port, function () {
-
-    logger.info("DVP-LiteTicket.main Server %s listening at %s", server.name, server.url);
-
+server.listen(port, function() {
+  logger.info(
+    "DVP-Interactions.main Server %s listening at %s",
+    server.name,
+    server.url
+  );
 });
-
-
-
-
-
