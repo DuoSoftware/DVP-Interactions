@@ -15,3 +15,13 @@ WORKDIR /usr/local/src/interactions
 RUN npm install
 EXPOSE 8873
 CMD [ "node", "/usr/local/src/interactions/app.js" ]
+
+FROM node:10-alpine
+WORKDIR /usr/local/src/interactions
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 8873
+CMD [ "node", "app.js" ]
+
+
