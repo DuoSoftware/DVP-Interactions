@@ -12,8 +12,8 @@ module.exports = {
     mode: "instance", //instance, cluster, sentinel
     ip: "138.197.90.92",
     port: 6389,
-    user: "duo",
-    password: "DuoS123",
+    user: "",
+    password: "",
     sentinels: {
       hosts: "138.197.90.92,45.55.205.92,138.197.90.92",
       port: 16389,
@@ -24,8 +24,8 @@ module.exports = {
   Security: {
     ip: "138.197.90.92",
     port: 6389,
-    user: "duo",
-    password: "DuoS123",
+    user: "",
+    password: "",
     mode: "instance", //instance, cluster, sentinel
     sentinels: {
       hosts: "138.197.90.92,45.55.205.92,138.197.90.92",
@@ -50,11 +50,11 @@ module.exports = {
 
   Mongo: {
     ip: "ec2-18-189-192-150.us-east-2.compute.amazonaws.com",
-    port: "27017",
+    port: "",
     dbname: "dvpdb",
     password: "DuoS123",
     user: "duo",
-    replicaset: ""
+    type: "mongodb+srv"
   },
 
   RabbitMQ: {
