@@ -9,7 +9,7 @@
     "config": "^1.21.0",
     "dvp-common": "1.1.0",
     "dvp-healthcheck": "^1.0.3",
-    "dvp-mongomodels": "^5.4.0",
+    "dvp-mongomodels": "^6.1.0",
     "mongoose-unique-validator": "^1.0.2",
     "node-uuid": "^1.4.3",
     "restify": "^4.0.3",
