@@ -26,7 +26,7 @@ restify.CORS.ALLOW_HEADERS.push("companyinfo");
 server.use(restify.CORS());
 server.use(restify.fullResponse());
 
-server.use(jwt({ secret: secret.Secret }));
+server.use(jwt({ secret: secret.Secret }).unless({path: ['/healthcheck']}));
 
 //var mongoip=config.Mongo.ip;
 //var mongoport=config.Mongo.port;
