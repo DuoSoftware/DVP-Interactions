@@ -3,10 +3,10 @@
  */
 
 //var mongoose = require('mongoose');
-var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
+var logger = require('dvp-common-lite/LogHandler/CommonLogHandler.js').logger;
 var InboxMessage = require('dvp-mongomodels/model/UserInbox').InboxMessage;
 //var User = require('dvp-mongomodels/model/User');
-var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
+var messageFormatter = require('dvp-common-lite/CommonMessageGenerator/ClientMessageJsonFormatter.js');
 var uuid = require('node-uuid');
 var async = require('async');
 var UserAccount = require('dvp-mongomodels/model/UserAccount');

@@ -4,11 +4,11 @@
 
 
 //var mongoose = require('mongoose');
-var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
+var logger = require('dvp-common-lite/LogHandler/CommonLogHandler.js').logger;
 var Engagement = require('dvp-mongomodels/model/Engagement').Engagement;
 var EngagementSession = require('dvp-mongomodels/model/Engagement').EngagementSession;
 var EngagementNote = require('dvp-mongomodels/model/Engagement').EngagementNote;
-var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
+var messageFormatter = require('dvp-common-lite/CommonMessageGenerator/ClientMessageJsonFormatter.js');
 var ExternalUser = require('dvp-mongomodels/model/ExternalUser');
 var amqp = require('amqp');
 var config = require('config');
