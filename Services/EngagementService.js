@@ -699,6 +699,42 @@ function AppendNoteToEngagementSession(req, res){
 
         } else {
 
+            Engagement.findOneAndUpdate({profile: req.params.profile,company: company, tenant: tenant}, { $push :{
+                    engagements : req.params.session
+                }}, function (err, engagement) {
+                if (err) {
+                    if(!engagement){
+                        var engagement = Engagement({
+
+                            profile: req.params.profile,
+                            company: company,
+                            tenant: tenant,
+                            engagements : [req.params.session],
+                            created_at: Date.now(),
+                            updated_at: Date.now()
+
+                        });
+
+                        engagement.save(function (err, engage) {
+                            if (err) {
+                                jsonString = messageFormatter.FormatMessage(err, "Engagement save failed", false, undefined);
+                                res.end(jsonString);
+                            } else {
+
+                                jsonString = messageFormatter.FormatMessage(undefined, "Engagement saved successfully", true, notes);
+                                res.end(jsonString);
+                            }
+                        });
+                    }
+
+                    jsonString = messageFormatter.FormatMessage(err, "Append EngagementSession To Engagement Failed", false, undefined);
+
+                } else {
+                    jsonString = messageFormatter.FormatMessage(undefined, "Append EngagementSession To Engagement Successful", true, notes);
+                }
+                res.end(jsonString);
+            });
+
             jsonString = messageFormatter.FormatMessage(undefined, "Append Note To EngagementSession Successful", true, notes);
 
         }

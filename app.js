@@ -226,9 +226,9 @@ server.del(
   engagementService.DeleteEngagementSession
 );
 server.post(
-  "/DVP/API/:version/EngagementSession/:session/Note",
-  authorization({ resource: "engagement", action: "write" }),
-  engagementService.AppendNoteToEngagementSession
+    "/DVP/API/:version/Profile/:profile/EngagementSession/:session/Note",
+    authorization({resource:"engagement", action:"write"}),
+    engagementService.AppendNoteToEngagementSession
 );
 server.get(
   "/DVP/API/:version/EngagementSession/:session/Note",
