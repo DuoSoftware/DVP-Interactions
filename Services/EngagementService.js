@@ -102,14 +102,15 @@ function GetEngagements(req,res){
 function GetEngagement(req,res){
 
 
-    logger.debug("DVP-Interactions.GetEngagement Internal method ");
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.GetEngagement] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
     Engagement.findOne({company: company, tenant: tenant, _id: req.params.id}, function(err, engagement) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);
+            logger.error('[EngagementService.GetEngagement] - [MongoDB]  - Error occurred - [%s]', err);
 
         }else {
 
@@ -117,10 +118,12 @@ function GetEngagement(req,res){
 
 
                 jsonString = messageFormatter.FormatMessage(err, "Get Engagements Successful", true, engagement);
+                logger.info('[EngagementService.GetEngagement] - [%s] - [%s] - [MongoDB]  - Data found for Engagement - [%s]',  tenant, company, JSON.stringify(engagement));
 
             }else{
 
                 jsonString = messageFormatter.FormatMessage(undefined, "No Engagements Found", false, undefined);
+                logger.error('[EngagementService.GetEngagement] - [MongoDB]  - No record found for Engagement - [%s] - [%s]  ', tenant, company);
 
             }
         }
@@ -132,15 +135,15 @@ function GetEngagement(req,res){
 }
 function GetEngagements(req,res){
 
-
-    logger.debug("DVP-Interactions.GetEngagements Internal method ");
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.GetEngagements] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
     Engagement.find({company: company, tenant: tenant, _id: { $in: req.params.ids }}, function(err, engagement) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);
+            logger.error('[EngagementService.GetEngagements] - [MongoDB]  - Error occurred - [%s]', err);
 
         }else {
 
@@ -148,10 +151,12 @@ function GetEngagements(req,res){
 
 
                 jsonString = messageFormatter.FormatMessage(err, "Get Engagements Successful", true, engagement);
+                logger.info('[EngagementService.GetEngagements] - [%s] - [%s] - [MongoDB]  - Data found for Engagements - [%s]',  tenant, company, JSON.stringify(engagement));
 
             }else{
 
                 jsonString = messageFormatter.FormatMessage(undefined, "No Engagements Found", false, undefined);
+                logger.error('[EngagementService.GetEngagements] - [MongoDB]  - No record found for Engagements - [%s] - [%s]  ', tenant, company);
 
             }
         }
@@ -163,25 +168,28 @@ function GetEngagements(req,res){
 }
 function GetEngagementsWithData(req,res){
 
-    logger.debug("DVP-Interactions.GetEngagement Internal method ");
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.GetEngagementsWithData] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
+
     Engagement.find({company: company, tenant: tenant}).populate('EngagementSession').exec(function(err, engagements) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);
+            logger.error('[EngagementService.GetEngagementsWithData] - [MongoDB]  - Error occurred - [%s]', err);
 
         }else {
 
             if (engagements) {
 
-
                 jsonString = messageFormatter.FormatMessage(err, "Get Engagements Successful", true, engagements);
+                logger.info('[EngagementService.GetEngagementsWithData] - [%s] - [%s] - [MongoDB]  - Data found for Engagement - [%s]',  tenant, company, JSON.stringify(engagements));
 
             }else{
 
                 jsonString = messageFormatter.FormatMessage(undefined, "No Engagements Found", false, undefined);
+                logger.error('[EngagementService.GetEngagementsWithData] - [MongoDB]  - No record found for Engagement - [%s] - [%s]  ', tenant, company);
 
             }
         }
@@ -194,25 +202,28 @@ function GetEngagementsWithData(req,res){
 function GetEngagementWithData(req,res){
 
 
-    logger.debug("DVP-Interactions.GetEngagement Internal method ");
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.GetEngagementWithData] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
+
     Engagement.findOne({company: company, tenant: tenant, _id:req.params.id}).populate('engagements').exec(function(err, engagement) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);
+            logger.error('[EngagementService.GetEngagementWithData] - [MongoDB]  - Error occurred - [%s]', err);
 
         }else {
 
             if (engagement) {
 
-
                 jsonString = messageFormatter.FormatMessage(err, "Get Engagements Successful", true, engagement);
+                logger.info('[EngagementService.GetEngagementWithData] - [%s] - [%s] - [MongoDB]  - Data found for Engagement - [%s]',  tenant, company, JSON.stringify(engagement));
 
             }else{
 
                 jsonString = messageFormatter.FormatMessage(undefined, "No Engagements Found", false, undefined);
+                logger.error('[EngagementService.GetEngagementWithData] - [MongoDB]  - No record found for Engagement - [%s] - [%s]  ', tenant, company);
 
             }
         }
@@ -225,25 +236,27 @@ function GetEngagementWithData(req,res){
 function GetEngagementByProfile(req,res){
 
 
-    logger.debug("DVP-Interactions.GetEngagement Internal method ");
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.GetEngagementByProfile] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
     Engagement.findOne({company: company, tenant: tenant, profile: req.params.id}, function(err, engagement) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);
+            logger.error('[EngagementService.GetEngagementByProfile] - [MongoDB]  - Error occurred - [%s]', err);
 
         }else {
 
             if (engagement) {
 
-
                 jsonString = messageFormatter.FormatMessage(err, "Get Engagements Successful", true, engagement);
+                logger.info('[EngagementService.GetEngagementByProfile] - [%s] - [%s] - [MongoDB]  - Data found for Engagement - [%s]',  tenant, company, JSON.stringify(engagement));
 
             }else{
 
                 jsonString = messageFormatter.FormatMessage(undefined, "No Engagements Found", false, undefined);
+                logger.error('[EngagementService.GetEngagementByProfile] - [MongoDB]  - No record found for Engagement- [%s] - [%s]  ', tenant, company);
 
             }
         }
@@ -254,17 +267,16 @@ function GetEngagementByProfile(req,res){
 };
 function CreateEngagement(req,res) {
 
-
-    logger.debug("DVP-Interactions.CreateEngagement Internal method ");
     var jsonString;
     var tenant = parseInt(req.user.tenant);
     var company = parseInt(req.user.company);
-
+    logger.info('[EngagementService.CreateEngagement] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     ExternalUser.findOne({company: company, tenant: tenant, _id: req.body.profile}, function(err, users) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get External Users Failed", false, undefined);
+            logger.error('[EngagementService.CreateEngagement] - [MongoDB]  - Error occurred - [%s]', err);
             res.end(jsonString);
 
         }else {
@@ -285,10 +297,12 @@ function CreateEngagement(req,res) {
                 engagement.save(function (err, engage) {
                     if (err) {
                         jsonString = messageFormatter.FormatMessage(err, "Engagement save failed", false, undefined);
+                        logger.error('[EngagementService.CreateEngagement] - [MongoDB]  - Error occurred - [%s]', err);
                         res.end(jsonString);
                     } else {
 
                         jsonString = messageFormatter.FormatMessage(undefined, "Engagement saved successfully", true, engage);
+                        logger.info('[EngagementService.CreateEngagement] - [%s] - [%s] - [MongoDB]  - Engagement saved - [%s]',  tenant, company, JSON.stringify(engage));
                         res.end(jsonString);
                     }
                 });
@@ -297,6 +311,7 @@ function CreateEngagement(req,res) {
             }else{
 
                 jsonString = messageFormatter.FormatMessage(undefined, "No External Users Found", false, undefined);
+                logger.error('[EngagementService.CreateEngagement] - [MongoDB]  - No record found for External Users- [%s] - [%s]  ', tenant, company);
                 res.end(jsonString);
 
             }
@@ -305,17 +320,17 @@ function CreateEngagement(req,res) {
 };
 function DeleteEngagement(req,res){
 
-
-    logger.debug("DVP-Interactions.DeleteEngagement Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.DeleteEngagement] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
     Engagement.findOneAndRemove({_id: req.params.id,company: company, tenant: tenant}, function(err, engagement) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Delete Engagement failed", false, undefined);
+            logger.error('[EngagementService.DeleteEngagement] - [MongoDB]  - Error occurred - [%s]', err);
         }else{
             jsonString = messageFormatter.FormatMessage(undefined, "Delete Engagement Success", true, undefined);
+            logger.info('[EngagementService.DeleteEngagement] - [%s] - [%s] - [MongoDB]  - Engagement Deleted  - [%s]',  tenant, company, JSON.stringify(engagement));
         }
         res.end(jsonString);
     });
@@ -323,11 +338,10 @@ function DeleteEngagement(req,res){
 };
 function AddEngagementSession(req, res) {
 
-   logger.debug("DVP-Interactions.GetEngagement Internal method ");
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-
+    logger.info('[EngagementService.AddEngagementSession] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     var engagementSession = EngagementSession({
 
@@ -349,6 +363,7 @@ function AddEngagementSession(req, res) {
     engagementSession.save(function (err, engage) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Engagement Session save failed", false, undefined);
+            logger.error('[EngagementService.AddEngagementSession] - [MongoDB]  - Error occurred - [%s]', err);
             res.end(jsonString);
         } else {
 
@@ -380,10 +395,12 @@ function AddEngagementSession(req, res) {
                 }, {upsert: true, new: true}, function (err, session) {
                     if (err) {
                         jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+                        logger.error('[EngagementService.AddEngagementSession] - [MongoDB]  - Error occurred - [%s]', err);
 
                     } else {
                         //engage.profile_id = users[0].id;
                         jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
+                        logger.info('[EngagementService.AddEngagementSession] - [%s] - [%s] - [MongoDB]  - Data Saved for engagementSession - [%s]',  tenant, company, JSON.stringify(engage));
                     }
 
                     res.end(jsonString);
@@ -412,6 +429,7 @@ function AddEngagementSession(req, res) {
 
 
                 jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
+                logger.info('[EngagementService.AddEngagementSession] - [%s] - [%s] - [MongoDB]  - Data Saved for engagementSession - [%s]',  tenant, company, JSON.stringify(engage));
 
                 res.end(jsonString);
             }
@@ -421,18 +439,16 @@ function AddEngagementSession(req, res) {
 };
 function DeleteEngagementSession(req, res){
 
-
-    logger.debug("DVP-Interactions.DeleteEngagementSession Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-
+    logger.info('[EngagementService.DeleteEngagementSession] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
 
     EngagementSession.findOneAndRemove({engagement_id: req.params.session,company: company, tenant: tenant}, function(err, engagement) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Delete Engagement failed", false, undefined);
+            logger.error('[EngagementService.DeleteEngagementSession] - [MongoDB]  - Error occurred - [%s]', err);
             res.end(jsonString);
         }else{
 
@@ -441,10 +457,12 @@ function DeleteEngagementSession(req, res){
                 if (err) {
 
                     jsonString = messageFormatter.FormatMessage(err, "Remove Engagement Failed", false, undefined);
+                    logger.error('[EngagementService.DeleteEngagementSession] - [MongoDB]  - Error occurred - [%s]', err);
 
                 }else{
 
                     jsonString = messageFormatter.FormatMessage(undefined, "Remove Engagement successfully", false, engagement);
+                    logger.info('[EngagementService.DeleteEngagementSession] - [%s] - [%s] - [MongoDB]  - EngagmentSession Deleted ',  tenant, company);
                 }
 
                 res.end(jsonString);
@@ -460,13 +478,10 @@ function DeleteEngagementSession(req, res){
 };
 function GetEngagementSessions_back(req, res){
 
-
-    logger.debug("DVP-Interactions.GetEngagementSessions Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-
+    logger.info('[EngagementService.GetEngagementSessions_back] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     var paramArr;
     if(Array.isArray(req.query.session)) {
@@ -481,6 +496,7 @@ function GetEngagementSessions_back(req, res){
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Failed", false, undefined);
+            logger.error('[EngagementService.GetEngagementSessions_back] - [MongoDB]  - Error occurred - [%s]', err);
 
         }else {
 
@@ -491,13 +507,13 @@ function GetEngagementSessions_back(req, res){
                     return paramArr.indexOf(a.engagement_id) - paramArr.indexOf(b.engagement_id);
                 });
 
-
-
                 jsonString = messageFormatter.FormatMessage(err, "Get EngagementSession Successful", true, engagement);
+                logger.info('[EngagementService.GetEngagementSessions_back] - [%s] - [%s] - [MongoDB]  - Data found for EngagementSession - [%s]',  tenant, company, JSON.stringify(engagement));
 
             }else{
 
                 jsonString = messageFormatter.FormatMessage(undefined, "No EngagementSession Found", false, undefined);
+                logger.error('[EngagementService.GetEngagementSessions_back] - [MongoDB]  - No record found for EngagementSession- [%s] - [%s]  ', tenant, company);
 
             }
         }
@@ -508,12 +524,10 @@ function GetEngagementSessions_back(req, res){
 };
 function GetUserEngagementSessions(req, res) {
 
-
-    logger.debug("DVP-Interactions.GetEngagementSessions Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.GetUserEngagementSessions] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     var userProfile = req.params.id;
     var limitCount = parseInt(req.query.limit);
@@ -567,16 +581,19 @@ function GetUserEngagementSessions(req, res) {
             if (err) {
 
                 jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Failed", false, undefined);
+                logger.error('[EngagementService.GetUserEngagementSessions] - [MongoDB]  - Error occurred - [%s]', err);
 
             } else {
 
                 if (engagements) {
 
                     jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Successful", true, engagements);
+                    logger.info('[EngagementService.GetUserEngagementSessions] - [%s] - [%s] - [MongoDB]  - Data found for EngagementSesssion- [%s]',  tenant, company, JSON.stringify(engagements));
 
                 } else {
 
                     jsonString = messageFormatter.FormatMessage(undefined, "No EngagementSessions Found", false, undefined);
+                    logger.error('[EngagementService.GetUserEngagementSessions] - [MongoDB]  - No record found for EngagementSession- [%s] - [%s]  ', tenant, company);
 
                 }
             }
@@ -587,13 +604,11 @@ function GetUserEngagementSessions(req, res) {
 };
 function GetUserEngagementSessionsCount(req, res){
 
-
-    logger.debug("DVP-Interactions.GetEngagementSessions Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
     var userProfile = req.params.id;
+    logger.info('[EngagementService.GetUserEngagementSessionsCount] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     var query = {
         profile_id: userProfile,
@@ -633,16 +648,19 @@ function GetUserEngagementSessionsCount(req, res){
             if (err) {
 
                 jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Failed", false, undefined);
+                logger.error('[EngagementService.GetUserEngagementSessionsCount] - [MongoDB]  - Error occurred - [%s]', err);
 
             }else {
 
                 if (engagement) {
 
                     jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Successful", true, engagement);
+                    logger.info('[EngagementService.GetUserEngagementSessionsCount] - [%s] - [%s] - [MongoDB]  - Data found for EngagementSession- [%s]',  tenant, company, JSON.stringify(engagement));
 
                 }else{
 
                     jsonString = messageFormatter.FormatMessage(undefined, "No EngagementSessions Found", false, undefined);
+                    logger.error('[EngagementService.GetUserEngagementSessionsCount] - [MongoDB]  - No record found for EngagementSession - [%s] - [%s]  ', tenant, company);
 
                 }
             }
@@ -653,22 +671,29 @@ function GetUserEngagementSessionsCount(req, res){
 };
 function getEngagementSessionNote(req, res){
 
-
-    logger.debug("DVP-LiteTicket.getEngagementSessionNote Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.getEngagementSessionNote] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     EngagementSession.findOne({engagement_id: req.params.session,company: company, tenant: tenant},'notes', function (err, eng) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "getEngagementSessionNote Failed", false, undefined);
+            logger.error('[EngagementService.getEngagementSessionNote] - [MongoDB]  - Error occurred - [%s]', err);
 
         } else {
+            if (eng) {
 
-            jsonString = messageFormatter.FormatMessage(undefined, "getEngagementSessionNote Successful", true, eng);
+                jsonString = messageFormatter.FormatMessage(undefined, "getEngagementSessionNote Successful", true, eng);
+                logger.info('[EngagementService.getEngagementSessionNote] - [%s] - [%s] - [MongoDB]  - Data found for EngagementSession - [%s]',  tenant, company, JSON.stringify(eng));
 
+            }else{
+
+                jsonString = messageFormatter.FormatMessage(undefined, "No EngagementSessions Found", false, undefined);
+                logger.error('[EngagementService.getEngagementSessionNote] - [MongoDB]  - No record found for EngagementSession - [%s] - [%s]  ', tenant, company);
+
+            }
         }
 
         res.end(jsonString);
@@ -679,12 +704,10 @@ function getEngagementSessionNote(req, res){
 };
 function AppendNoteToEngagementSession(req, res){
 
-
-    logger.debug("DVP-LiteTicket.AppendNoteToEngagementSession Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.AppendNoteToEngagementSession] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     req.body.updated_at = Date.now();
     EngagementSession.findOneAndUpdate({engagement_id: req.params.session,company: company, tenant: tenant}, { $addToSet :{
@@ -696,10 +719,12 @@ function AppendNoteToEngagementSession(req, res){
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Append Note To EngagementSession Failed", false, undefined);
+            logger.error('[EngagementService.AppendNoteToEngagementSession] - [MongoDB]  - Error occurred - [%s]', err);
 
         } else {
 
             jsonString = messageFormatter.FormatMessage(undefined, "Append Note To EngagementSession Successful", true, notes);
+            logger.info('[EngagementService.AppendNoteToEngagementSession] - [%s] - [%s] - [MongoDB]  - Append Note To EngagementSession - [%s]',  tenant, company, JSON.stringify(notes));
 
         }
 
@@ -711,12 +736,10 @@ function AppendNoteToEngagementSession(req, res){
 };
 function RemoveNoteFromEngagementSession(req, res){
 
-
-    logger.debug("DVP-LiteTicket.RemoveNoteFromEngagementSession Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.RemoveNoteFromEngagementSession] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     req.body.updated_at = Date.now();
     EngagementSession.findOneAndUpdate({engagement_id: req.params.session,company: company, tenant: tenant}, { pull :{
@@ -726,10 +749,12 @@ function RemoveNoteFromEngagementSession(req, res){
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Remove Note From EngagementSession Failed", false, undefined);
+            logger.error('[EngagementService.RemoveNoteFromEngagementSession] - [MongoDB]  - Error occurred - [%s]', err);
 
         } else {
 
             jsonString = messageFormatter.FormatMessage(undefined, "Remove Note From EngagementSession Successful", true, notes);
+            logger.info('[EngagementService.RemoveNoteFromEngagementSession] - [%s] - [%s] - [MongoDB]  - Removed Note from EngagementSession - [%s]',  tenant, company, JSON.stringify(notes));
 
         }
 
@@ -741,12 +766,10 @@ function RemoveNoteFromEngagementSession(req, res){
 };
 function UpdateNoteInEngagementSession(req, res){
 
-
-    logger.debug("DVP-LiteTicket.UpdateNoteInEngagementSession Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.UpdateNoteInEngagementSession] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     req.body.updated_at = Date.now();
     EngagementSession.findOneAndUpdate({engagement_id: req.params.session,company: company, tenant: tenant, 'notes.id':req.body.noteid}, { $set :{
@@ -756,10 +779,12 @@ function UpdateNoteInEngagementSession(req, res){
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Update Note In EngagementSession Failed", false, undefined);
+            logger.error('[EngagementService.UpdateNoteInEngagementSession] - [MongoDB]  - Error occurred - [%s]', err);
 
         } else {
 
             jsonString = messageFormatter.FormatMessage(undefined, "Update Note In EngagementSession Successful", true, notes);
+            logger.info('[EngagementService.UpdateNoteInEngagementSession] - [%s] - [%s] - [MongoDB]  - Update Note in EngagementSession - [%s]',  tenant, company, JSON.stringify(notes));
 
         }
 
@@ -771,11 +796,10 @@ function UpdateNoteInEngagementSession(req, res){
 };
 function AddEngagementSessionForProfile(req, res) {
 
-    logger.debug("DVP-Interactions.AddEngagementSessionForProfile Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var category = req.body.channel;
+    logger.info('[EngagementService.AddEngagementSessionForProfile] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     var contact = req.body.channel_from;
     //if(req.body.channel_id)
@@ -960,6 +984,7 @@ function AddEngagementSessionForProfile(req, res) {
             engagementSession.save(function (err, engage) {
                 if (err) {
                     jsonString = messageFormatter.FormatMessage(err, "Engagement Session save failed", false, undefined);
+                    logger.error('[EngagementService.AddEngagementSessionForProfile] - [MongoDB]  - Error occurred - [%s]', err);
                     res.end(jsonString);
                 } else {
 
@@ -998,12 +1023,14 @@ function AddEngagementSessionForProfile(req, res) {
                             if (err) {
 
                                 jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+                                logger.error('[EngagementService.AddEngagementSessionForProfile] - [MongoDB]  - Error occurred - [%s]', err);
 
                             } else {
 
                                 engage.profile_id = users[0].id;
 
                                 jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
+                                logger.info('[EngagementService.AddEngagementSessionForProfile] - [%s] - [%s] - [MongoDB]  - Add EngagementSession - [%s]',  tenant, company, JSON.stringify(engage));
 
                             }
 
@@ -1014,6 +1041,7 @@ function AddEngagementSessionForProfile(req, res) {
 
 
                         jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, engage);
+                        logger.info('[EngagementService.AddEngagementSessionForProfile] - [%s] - [%s] - [MongoDB]  - Add EngagementSession - [%s]',  tenant, company, JSON.stringify(engage));
 
                         res.end(jsonString);
                     }
@@ -1050,10 +1078,12 @@ function AddEngagementSessionForProfile(req, res) {
             engagementSession.save(function (err, engage) {
                 if (err) {
                     jsonString = messageFormatter.FormatMessage(err, "Engagement Session save failed", false, undefined);
+                    logger.error('[EngagementService.AddEngagementSessionForProfile] - [MongoDB]  - Error occurred - [%s]', err);
 
                 } else {
 
                     jsonString = messageFormatter.FormatMessage(undefined, "Engagement Session saved successfully", true, engage);
+                    logger.info('[EngagementService.AddEngagementSessionForProfile] - [%s] - [%s] - [MongoDB]  - EngagementSession Saved - [%s]',  tenant, company, JSON.stringify(engage));
                 }
 
                 res.end(jsonString);
@@ -1063,18 +1093,16 @@ function AddEngagementSessionForProfile(req, res) {
 }
 function MoveEngagementBetweenProfiles(req, res){
 
-
-    logger.debug("DVP-LiteTicket.MoveEngagementBetweenProfiles Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-
+    logger.info('[EngagementService.MoveEngagementBetweenProfiles] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     EngagementSession.findOne({engagement_id: req.params.session,company: company, tenant: tenant}, function (err, session) {
         if (err || (req.params.from == req.params.to)) {
 
             jsonString = messageFormatter.FormatMessage(err, "Find engagement Failed", false, undefined);
+            logger.error('[EngagementService.MoveEngagementBetweenProfiles] - [MongoDB]  - Error occurred - [%s]', err);
             res.end(jsonString);
 
         } else {
@@ -1108,6 +1136,7 @@ function MoveEngagementBetweenProfiles(req, res){
                     if (err) {
 
                         jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+                        logger.error('[EngagementService.MoveEngagementBetweenProfiles] - [MongoDB]  - Error occurred - [%s]', err);
                         res.end(jsonString);
 
                     } else {
@@ -1122,11 +1151,12 @@ function MoveEngagementBetweenProfiles(req, res){
                                 if (err) {
 
                                     jsonString = messageFormatter.FormatMessage(err, "Remove Engagement Failed", false, undefined);
-
+                                    logger.error('[EngagementService.MoveEngagementBetweenProfiles] - [MongoDB]  - Error occurred - [%s]', err);
 
                                 } else {
 
                                     jsonString = messageFormatter.FormatMessage(undefined, "Remove Engagement successfully", true, engagement);
+                                    logger.info('[EngagementService.MoveEngagementBetweenProfiles] - [%s] - [%s] - [MongoDB]  - Remove Engagement - [%s]',  tenant, company, JSON.stringify(engagement));
 
                                 }
 
@@ -1142,7 +1172,7 @@ function MoveEngagementBetweenProfiles(req, res){
                             }else{
 
                                 jsonString = messageFormatter.FormatMessage(undefined, "Operation completed successfully", true, undefined);
-
+                                logger.info('[EngagementService.MoveEngagementBetweenProfiles] - [%s] - [%s] - [MongoDB]  - Engagement Moved',  tenant, company);
 
                             }
                             res.end(jsonString);
@@ -1155,6 +1185,7 @@ function MoveEngagementBetweenProfiles(req, res){
             }else{
 
                 jsonString = messageFormatter.FormatMessage(err, "Engagement Session Not Found", false, undefined);
+                logger.error('[EngagementService.GetEngagements] - [MongoDB]  - No record found for Engagement Session- [%s] - [%s]  ', tenant, company);
                 res.end(jsonString);
 
             }
@@ -1164,12 +1195,10 @@ function MoveEngagementBetweenProfiles(req, res){
 };
 function GetIsolatedEngagementSessions(req, res) {
 
-    logger.debug("DVP-LiteTicket.GetEngagementSessionsWhichHasNoProfile Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-
+    logger.info('[EngagementService.GetIsolatedEngagementSessions] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     EngagementSession.find({
         has_profile: false,
@@ -1179,11 +1208,12 @@ function GetIsolatedEngagementSessions(req, res) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Find Engagement Session Failed", false, undefined);
-
+            logger.error('[EngagementService.GetIsolatedEngagementSessions] - [MongoDB]  - Error occurred - [%s]', err);
 
         } else {
 
             jsonString = messageFormatter.FormatMessage(err, "Find Engagement Session Successful ", false, session);
+            logger.info('[EngagementService.GetIsolatedEngagementSessions] - [%s] - [%s] - [MongoDB]  - Data found for EngagementSession - [%s]',  tenant, company, JSON.stringify(session));
 
         }
 
@@ -1192,10 +1222,10 @@ function GetIsolatedEngagementSessions(req, res) {
 }
 function AddIsolatedEngagementSession(req, res) {
 
-    logger.debug("DVP-Interactions.GetEngagement Internal method ");
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.AddIsolatedEngagementSession] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     EngagementSession.findOneAndUpdate({engagement_id: req.params.session, company: company, tenant: tenant, has_profile: false}, {
         has_profile: true,
@@ -1203,6 +1233,7 @@ function AddIsolatedEngagementSession(req, res) {
     },function (err, engagementSession) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Engagement Session save failed", false, undefined);
+            logger.error('[EngagementService.AddIsolatedEngagementSession] - [MongoDB]  - Error occurred - [%s]', err);
             res.end(jsonString);
         } else {
             if (engagementSession) {
@@ -1234,10 +1265,12 @@ function AddIsolatedEngagementSession(req, res) {
                         if (err) {
 
                             jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
+                            logger.error('[EngagementService.AddIsolatedEngagementSession] - [MongoDB]  - Error occurred - [%s]', err);
 
                         } else {
 
                             jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, session);
+                            logger.info('[EngagementService.AddIsolatedEngagementSession] - [%s] - [%s] - [MongoDB]  - Engagement Saved - [%s]',  tenant, company, JSON.stringify(session));
 
                         }
 
@@ -1245,6 +1278,7 @@ function AddIsolatedEngagementSession(req, res) {
                     });
                 }else{
                     jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, undefined);
+                    logger.info('[EngagementService.AddIsolatedEngagementSession] - [%s] - [%s] - [MongoDB]  - Data found for EngagementSession - [%s]',  tenant, company, JSON.stringify(engagementSession));
                     res.end(jsonString);
 
 
@@ -1252,6 +1286,7 @@ function AddIsolatedEngagementSession(req, res) {
             } else {
 
                 jsonString = messageFormatter.FormatMessage(undefined, "Engagement Session save failed", false, undefined);
+                logger.error('[EngagementService.GetEngagements] - [MongoDB]  - No record found for Engagement Session - [%s] - [%s]  ', tenant, company);
                 res.end(jsonString);
             }
 
@@ -1260,23 +1295,23 @@ function AddIsolatedEngagementSession(req, res) {
 };
 function GetEngagementCounts(req,res){
 
-
-    logger.debug("DVP-Interactions.GetEngagement Internal method ");
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.GetEngagementCounts] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
+
     Engagement.findOne({company: company, tenant: tenant, profile: req.params.id}, function(err, engagement) {
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get Engagements Failed", false, undefined);
+            logger.error('[EngagementService.GetEngagementCounts] - [MongoDB]  - Error occurred - [%s]', err);
 
         }else {
 
             if (engagement) {
 
-
                 jsonString = messageFormatter.FormatMessage(err, "Get Engagements Successful", true, engagement);
-
+                logger.info('[EngagementService.GetEngagementCounts] - [%s] - [%s] - [MongoDB]  - Data found for Engagements - [%s]',  tenant, company, JSON.stringify(engagement));
 
                 var aggregator = [
 
@@ -1293,10 +1328,11 @@ function GetEngagementCounts(req,res){
                 EngagementSession.aggregate(aggregator, function (err, tickets) {
                     if (err) {
                         jsonString = messageFormatter.FormatMessage(err, "Get Engagements count Failed", false, undefined);
+                        logger.error('[EngagementService.GetEngagementCounts] - [MongoDB]  - Error occurred - [%s]', err);
                     } else {
 
-
                         jsonString = messageFormatter.FormatMessage(undefined, "Get Engagements count Successful", true, tickets);
+                        logger.info('[EngagementService.GetEngagementCounts] - [%s] - [%s] - [MongoDB]  - Data found for Engagements count - [%s]',  tenant, company, JSON.stringify(tickets));
 
                     }
                     res.end(jsonString);
@@ -1306,6 +1342,7 @@ function GetEngagementCounts(req,res){
             }else{
 
                 jsonString = messageFormatter.FormatMessage(undefined, "No Engagements Found", false, undefined);
+                logger.error('[EngagementService.GetEngagementCounts] - [MongoDB]  - No record found for Engagements- [%s] - [%s]  ', tenant, company);
                 res.end(jsonString);
 
             }
@@ -1323,6 +1360,7 @@ function Interact(req, res) {
     var tenant = parseInt(req.user.tenant);
     var jsonString;
     var queueName;
+    logger.info('[EngagementService.Interact] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     try {
         var message = {
@@ -1382,12 +1420,10 @@ function Interact(req, res) {
 };
 function GetEngagementSessions(req, res) {
 
-
-    logger.debug("DVP-Interactions.GetEngagementSessions Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.GetEngagementSessions] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     var limitCount = parseInt(req.query.limit);
     var skipCount = parseInt(req.query.skip);
@@ -1439,16 +1475,19 @@ function GetEngagementSessions(req, res) {
             if (err) {
 
                 jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Failed", false, undefined);
+                logger.error('[EngagementService.GetEngagementSessions] - [MongoDB]  - Error occurred - [%s]', err);
 
             } else {
 
                 if (engagements) {
 
                     jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Successful", true, engagements);
+                    logger.info('[EngagementService.GetEngagementSessions] - [%s] - [%s] - [MongoDB]  - Data found for Engagements - [%s]',  tenant, company, JSON.stringify(engagements));
 
                 } else {
 
                     jsonString = messageFormatter.FormatMessage(undefined, "No EngagementSessions Found", false, undefined);
+                    logger.error('[EngagementService.GetEngagementSessions] - [MongoDB]  - No record found for Engagements - [%s] - [%s]  ', tenant, company);
 
                 }
             }
@@ -1459,12 +1498,10 @@ function GetEngagementSessions(req, res) {
 };
 function GetEngagementSessionsCount(req, res){
 
-
-    logger.debug("DVP-Interactions.GetEngagementSessions Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.GetEngagementSessionsCount] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     var query = {
         company: company,
@@ -1503,16 +1540,19 @@ function GetEngagementSessionsCount(req, res){
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Failed", false, undefined);
+            logger.error('[EngagementService.GetEngagementSessionsCount] - [MongoDB]  - Error occurred - [%s]', err);
 
         }else {
 
             if (engagement) {
 
                 jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Successful", true, engagement);
+                logger.info('[EngagementService.GetEngagementSessionsCount] - [%s] - [%s] - [MongoDB]  - Data found for EngagementSession - [%s]',  tenant, company, JSON.stringify(engagement));
 
             }else{
 
                 jsonString = messageFormatter.FormatMessage(undefined, "No EngagementSessions Found", false, undefined);
+                logger.error('[EngagementService.GetEngagementSessions] - [MongoDB]  - No record found for EngagementSession - [%s] - [%s]  ', tenant, company);
 
             }
         }
@@ -1523,12 +1563,10 @@ function GetEngagementSessionsCount(req, res){
 };
 function GetEngagementSession(req, res){
 
-
-    logger.debug("DVP-Interactions.GetEngagementSessions Internal method ");
-
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
+    logger.info('[EngagementService.GetEngagementSession] - [HTTP]  - Request received - [%s] - [%s]',  tenant, company);
 
     var session = req.params.session;
 
@@ -1537,16 +1575,19 @@ function GetEngagementSession(req, res){
         if (err) {
 
             jsonString = messageFormatter.FormatMessage(err, "Get EngagementSessions Failed", false, undefined);
+            logger.error('[EngagementService.GetEngagementSession] - [MongoDB]  - Error occurred - [%s]', err);
 
         }else {
 
             if (engagement) {
 
                 jsonString = messageFormatter.FormatMessage(err, "Get EngagementSession Successful", true, engagement);
+                logger.info('[EngagementService.GetEngagementSession] - [%s] - [%s] - [MongoDB]  - Data found for Engagement - [%s]',  tenant, company, JSON.stringify(engagement));
 
             }else{
 
                 jsonString = messageFormatter.FormatMessage(undefined, "No EngagementSession Found", false, undefined);
+                logger.error('[EngagementService.GetEngagementSession] - [MongoDB]  - No record found for Engagement- [%s] - [%s]  ', tenant, company);
 
             }
         }
