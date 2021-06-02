@@ -169,7 +169,7 @@ function GetEngagementsWithData(req, res) {
   var tenant = parseInt(req.user.tenant);
   var jsonString;
   Engagement.find({ company: company, tenant: tenant })
-    .populate("EngagementSession")
+    .populate("engagements")
     .exec(function (err, engagements) {
       if (err) {
         jsonString = messageFormatter.FormatMessage(
