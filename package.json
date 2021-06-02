@@ -10,7 +10,7 @@
     "dvp-common": "1.1.0",
     "dvp-common-lite": "^1.1.0",
     "dvp-healthcheck": "^1.0.3",
-    "dvp-mongomodels": "^6.1.0",
+    "dvp-mongomodels": "^6.2.5",
     "mongoose-unique-validator": "^1.0.2",
     "node-uuid": "^1.4.3",
     "restify": "^4.0.3",

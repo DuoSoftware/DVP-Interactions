@@ -6,6 +6,7 @@ var secret = require("dvp-common-lite/Authentication/Secret.js");
 var authorization = require("dvp-common-lite/Authentication/Authorization.js");
 var inboxService = require("./Services/UserInboxService.js");
 var engagementService = require("./Services/EngagementService");
+var tagService = require("./Services/TagService");
 var mongomodels = require("dvp-mongomodels");
 var healthcheck = require("dvp-healthcheck/DBHealthChecker");
 
@@ -14,7 +15,7 @@ var port = config.Host.port || 3000;
 var host = config.Host.vdomain || "localhost";
 
 var server = restify.createServer({
-  name: "DVP Engagement Service"
+  name: "DVP Engagement Service",
 });
 
 server.pre(restify.pre.userAgentConnection());
@@ -26,7 +27,7 @@ restify.CORS.ALLOW_HEADERS.push("companyinfo");
 server.use(restify.CORS());
 server.use(restify.fullResponse());
 
-server.use(jwt({ secret: secret.Secret }).unless({path: ['/healthcheck']}));
+server.use(jwt({ secret: secret.Secret }).unless({ path: ["/healthcheck"] }));
 
 //var mongoip=config.Mongo.ip;
 //var mongoport=config.Mongo.port;
@@ -226,9 +227,9 @@ server.del(
   engagementService.DeleteEngagementSession
 );
 server.post(
-    "/DVP/API/:version/Profile/:profile/EngagementSession/:session/Note",
-    authorization({resource:"engagement", action:"write"}),
-    engagementService.AppendNoteToEngagementSession
+  "/DVP/API/:version/Profile/:profile/EngagementSession/:session/Note",
+  authorization({ resource: "engagement", action: "write" }),
+  engagementService.AppendNoteToEngagementSession
 );
 server.get(
   "/DVP/API/:version/EngagementSession/:session/Note",
@@ -318,8 +319,45 @@ server.get(
 );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//tagService
 
-server.listen(port, function() {
+server.get(
+  "/DVP/API/:version/Tag",
+  authorization({ resource: "engagement", action: "read" }),
+  tagService.GetTagMasters
+);
+server.get(
+  "/DVP/API/:version/Tag/:id",
+  authorization({ resource: "engagement", action: "read" }),
+  tagService.GetTagMaster
+);
+
+server.del(
+  "/DVP/API/:version/Tag/:id",
+  authorization({ resource: "engagement", action: "delete" }),
+  tagService.DeleteTagMaster
+);
+
+server.put(
+  "/DVP/API/:version/Tag/:id",
+  authorization({ resource: "engagement", action: "delete" }),
+  tagService.UpdateTagMaster
+);
+
+server.post(
+  "/DVP/API/:version/Tag",
+  authorization({ resource: "engagement", action: "write" }),
+  tagService.CreateMasterTag
+);
+
+server.put(
+  "/DVP/API/:version/EngagementSession/:session/Tag/:tag",
+  authorization({ resource: "engagement", action: "write" }),
+  tagService.AddTagToInteraction
+);
+/////////////////////////////////////////////Tag API//////////////////////////////////////////////////////////////////////////////
+
+server.listen(port, function () {
   logger.info(
     "DVP-Interactions.main Server %s listening at %s",
     server.name,
