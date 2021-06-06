@@ -11,7 +11,7 @@ function GetTagMasters(req, res) {
   var tenant = parseInt(req.user.tenant);
   var jsonString;
   TagMaster.find(
-    { company: company, tenant: tenant, active: true },
+    { company: company, tenant: tenant },
     function (err, tagMaster) {
       if (err) {
         jsonString = messageFormatter.FormatMessage(
