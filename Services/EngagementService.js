@@ -442,15 +442,10 @@ function AddEngagementSession(req, res) {
                  }
                  }, function (err, session) {
                  if (err) {
-
                  jsonString = messageFormatter.FormatMessage(err, "Add Engagement Session Failed", false, undefined);
-
                  } else {
-
                  jsonString = messageFormatter.FormatMessage(undefined, "Add Engagement Session Successful", true, session);
-
                  }
-
                  res.end(jsonString);
                  });
                  */
@@ -931,36 +926,24 @@ function AddEngagementSessionForProfile(req, res) {
     var jsonString;
 
 /*
-
     var otherQuery = {company: company, tenant: tenant, "contacts.type": category, "contacts.contact": contact};
     var orArray = [otherQuery];
-
     if(category == 'call' || category == 'sms' ){
-
         var queryObject = {company: company, tenant: tenant};
         queryObject["phone"] = contact;
-
         orArray.push(queryObject);
-
         queryObject = {company: company, tenant: tenant};
         queryObject["landnumber"] = contact;
-
         orArray.push(queryObject);
     } else if(category == 'facebook-post' || category == 'facebook-chat'){
-
         var queryObject = {company: company, tenant: tenant};
         queryObject["facebook"] = contact;
-
         orArray.push(queryObject);
     }else{
-
         var queryObject = {company: company, tenant: tenant};
         queryObject[category] = contact;
-
         orArray.push(queryObject);
     }
-
-
     var orQuery = {$or: orArray};
 */
 

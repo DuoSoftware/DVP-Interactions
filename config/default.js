@@ -5,33 +5,33 @@ module.exports = {
     Password: "DuoS123",
     Port: 5432,
     Host: "localhost",
-    Database: "dvpdb"
+    Database: "dvpdb",
   },
 
   Redis: {
     mode: "instance", //instance, cluster, sentinel
-    ip: "138.197.90.92",
-    port: 6389,
+    ip: "13.59.52.179",
+    port: 6379,
     user: "",
-    password: "",
+    password: "DuoS123",
     sentinels: {
       hosts: "138.197.90.92,45.55.205.92,138.197.90.92",
       port: 16389,
-      name: "redis-cluster"
-    }
+      name: "redis-cluster",
+    },
   },
 
   Security: {
-    ip: "138.197.90.92",
-    port: 6389,
+    ip: "13.59.52.179",
+    port: 6379,
     user: "",
-    password: "",
+    password: "DuoS123",
     mode: "instance", //instance, cluster, sentinel
     sentinels: {
       hosts: "138.197.90.92,45.55.205.92,138.197.90.92",
       port: 16389,
-      name: "redis-cluster"
-    }
+      name: "redis-cluster",
+    },
   },
 
   Host: {
@@ -40,29 +40,33 @@ module.exports = {
     vdomain: "localhost",
     domain: "localhost",
     port: "3637",
-    version: "1.0.0.0"
+    version: "1.0.0.0",
   },
 
   LBServer: {
     ip: "localhost",
-    port: "3434"
+    port: "3434",
   },
 
   Mongo: {
-    ip: "ec2-18-189-192-150.us-east-2.compute.amazonaws.com",
+    ip: "facetone-prod.2xyao.mongodb.net",
     port: "",
     dbname: "dvpdb",
     password: "DuoS123",
     user: "duo",
     type: "mongodb"
+
   },
 
+  //mongodb+srv://facetone:Hds7236YD@facetone-prod.2xyao.mongodb.net/dvpdb
+  //mongodb+srv://facetone:Hds7236YD@facetone-prod.2xyao.mongodb.net/test?authSource=admin&replicaSet=atlas-unwxnp-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true
+
   RabbitMQ: {
-    ip: "45.55.142.207",
+    ip: "13.59.52.179",
     port: 5672,
     user: "admin",
     password: "admin",
-    vhost: "/"
+    vhost: "/",
   },
 
   Services: {
@@ -76,6 +80,6 @@ module.exports = {
     sipuserendpointserviceVersion: "1.0.0.0",
     clusterconfigserviceHost: "clusterconfig.104.131.67.21.xip.io",
     clusterconfigservicePort: "8831",
-    clusterconfigserviceVersion: "1.0.0.0"
-  }
+    clusterconfigserviceVersion: "1.0.0.0",
+  },
 };
