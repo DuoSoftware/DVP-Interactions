@@ -52,9 +52,10 @@ module.exports = {
     ip: "facetone-prod.2xyao.mongodb.net",
     port: "",
     dbname: "dvpdb",
-    password: "Hds7236YD",
-    user: "facetone",
-    type: "mongodb+srv",
+    password: "DuoS123",
+    user: "duo",
+    type: "mongodb"
+
   },
 
   //mongodb+srv://facetone:Hds7236YD@facetone-prod.2xyao.mongodb.net/dvpdb
